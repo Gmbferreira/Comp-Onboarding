@@ -1,5 +1,3 @@
-// mocks/cardapioMock.ts
-
 import logo from "@/components/icons/manga.jpg";
 import { Prato } from "../schemas/cardapioSchemas";
 
@@ -10,7 +8,7 @@ export const mockPratos: Prato[] = [
     descricao: "Manga fresca assada na brasa",
     nota: 5,
     preco: 10.0,
-    imagem: logo.src, // Usamos o .src para pegar o caminho da imagem importada
+    imagem: logo.src,
     categoria: "REFEICAO",
   },
   {
@@ -42,6 +40,78 @@ export const mockPratos: Prato[] = [
   },
   {
     id: 5,
+    nome: "Manga com leite",
+    descricao: "Vitamina de manga e leite, perfeita para o café da manhã",
+    nota: 1,
+    preco: 15.0,
+    imagem: logo.src,
+    categoria: "SOBREMESA",
+  },
+  {
+    id: 6,
+    nome: "Manga na brasa",
+    descricao: "Manga fresca assada na brasa",
+    nota: 5,
+    preco: 10.0,
+    imagem: logo.src,
+    categoria: "REFEICAO",
+  },
+  {
+    id: 7,
+    nome: "Mousse de Manga",
+    descricao: "Delicioso mousse de manga com pedaços da fruta",
+    nota: 4,
+    preco: 15.0,
+    imagem: logo.src,
+    categoria: "SOBREMESA",
+  },
+  {
+    id: 8,
+    nome: "Suco de manga",
+    descricao: "Suco natural de manga 500ml",
+    nota: 5,
+    preco: 10.0,
+    imagem: logo.src,
+    categoria: "ACOMPANHAMENTO",
+  },
+  {
+    id: 9,
+    nome: "Manga com manga",
+    descricao: "nossa famosa manga especial, servida com manga",
+    nota: 5,
+    preco: 99.99,
+    imagem: logo.src,
+    categoria: "REFEICAO",
+  },
+  {
+    id: 10,
+    nome: "Manga com leite",
+    descricao: "Vitamina de manga e leite, perfeita para o café da manhã",
+    nota: 1,
+    preco: 15.0,
+    imagem: logo.src,
+    categoria: "SOBREMESA",
+  },
+  {
+    id: 11,
+    nome: "Suco de manga",
+    descricao: "Suco natural de manga 500ml",
+    nota: 5,
+    preco: 10.0,
+    imagem: logo.src,
+    categoria: "ACOMPANHAMENTO",
+  },
+  {
+    id: 12,
+    nome: "Manga com manga",
+    descricao: "nossa famosa manga especial, servida com manga",
+    nota: 5,
+    preco: 99.99,
+    imagem: logo.src,
+    categoria: "REFEICAO",
+  },
+  {
+    id: 13,
     nome: "Manga com leite",
     descricao: "Vitamina de manga e leite, perfeita para o café da manhã",
     nota: 1,
