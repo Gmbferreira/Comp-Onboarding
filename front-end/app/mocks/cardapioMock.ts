@@ -27,7 +27,7 @@ export const mockPratos: Prato[] = [
     nota: 5,
     preco: 10.0,
     imagem: logo.src,
-    categoria: "ACOMPANHAMENTO",
+    categoria: "BEBIDA",
   },
   {
     id: 4,
@@ -72,7 +72,7 @@ export const mockPratos: Prato[] = [
     nota: 5,
     preco: 10.0,
     imagem: logo.src,
-    categoria: "ACOMPANHAMENTO",
+    categoria: "BEBIDA",
   },
   {
     id: 9,
@@ -99,7 +99,7 @@ export const mockPratos: Prato[] = [
     nota: 5,
     preco: 10.0,
     imagem: logo.src,
-    categoria: "ACOMPANHAMENTO",
+    categoria: "BEBIDA",
   },
   {
     id: 12,

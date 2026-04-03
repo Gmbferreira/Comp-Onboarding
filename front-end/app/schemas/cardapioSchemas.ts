@@ -1,4 +1,4 @@
-export type CategoriaPrato = "REFEICAO" | "SOBREMESA" | "ACOMPANHAMENTO";
+export type CategoriaPrato = "REFEICAO" | "SOBREMESA" | "BEBIDA";
 
 export interface Prato {
   id: number;
