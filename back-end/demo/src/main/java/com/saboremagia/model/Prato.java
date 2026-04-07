@@ -16,13 +16,8 @@ public class Prato {
     private float preco;
     private String imagem;
     private CategoriaPrato categoria;
+    private boolean ativo;
 
-    public Prato(){ 
-        nome = descricao = imagem = null;
-        categoria = null;
-        nota = 0;
-        preco = 0;
-    }
 
     //-----------------GETTERS E SETTERS-----------------
     public int getId(){
@@ -46,7 +41,9 @@ public class Prato {
     public CategoriaPrato getCategoria(){
         return categoria;
     }
-
+    public boolean getAtivo(){
+        return ativo;
+    }
 
     public void setNome(String nome){
         this.nome = nome;
@@ -62,5 +59,8 @@ public class Prato {
     }
     public void setCategoria(CategoriaPrato categoria){
         this.categoria = categoria;
+    }
+    public void setAtivo(boolean ativo){
+        this.ativo = ativo;
     }
 }
