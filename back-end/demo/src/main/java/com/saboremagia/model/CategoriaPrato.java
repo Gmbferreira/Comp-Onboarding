@@ -10,4 +10,8 @@ public enum CategoriaPrato {
     CategoriaPrato(int id){
         this.id = id;
     }
+
+    public int getId(){
+        return id;
+    }
 }
