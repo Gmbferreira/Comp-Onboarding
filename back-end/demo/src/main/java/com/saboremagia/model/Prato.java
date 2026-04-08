@@ -54,6 +54,9 @@ public class Prato {
     public void setDescricao(String descricao){
         this.descricao = descricao;
     }
+    public void setNota(float nota){
+        this.nota = nota;
+    }
     public void setPreco(float preco){
         this.preco = preco;
     }
@@ -66,4 +69,12 @@ public class Prato {
     public void setAtivo(boolean ativo){
         this.ativo = ativo;
     }
+    
+    public void ativarPrato(){
+        this.ativo = true;
+    }
+    public void desativarPrato(){
+        this.ativo = false;
+    }
 }
+

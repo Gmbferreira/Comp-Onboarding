@@ -35,7 +35,7 @@ public class PratoController {
         return pratoRepository.save(prato);
     }
     public Prato desativarPrato(@PathVariable int id){
-        Prato prato = pratoRepository.findById(id).orElsethrow();
+        Prato prato = pratoRepository.findById(id).orElseThrow();
         prato.desativarPrato();
         return pratoRepository.save(prato);
     }
