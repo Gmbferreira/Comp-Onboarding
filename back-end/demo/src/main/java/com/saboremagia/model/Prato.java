@@ -1,6 +1,8 @@
 package com.saboremagia.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +17,7 @@ public class Prato {
     private float nota;
     private float preco;
     private String imagem;
+    @Enumerated(EnumType.STRING)
     private CategoriaPrato categoria;
     private boolean ativo;
 
