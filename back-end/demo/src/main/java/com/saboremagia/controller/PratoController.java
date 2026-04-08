@@ -4,11 +4,11 @@ import com.saboremagia.model.Prato;
 import com.saboremagia.repository.PratoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.util.ReflectionUtils;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 
 
@@ -29,11 +29,40 @@ public class PratoController {
     }
 
     @PutMapping("/{id}/ativar")
-    public Prato ativar(@PathVariable int id){
+    public Prato ativarPrato(@PathVariable int id){
         Prato prato = pratoRepository.findById(id).orElseThrow();
         prato.ativarPrato();
         return pratoRepository.save(prato);
     }
+    public Prato desativarPrato(@PathVariable int id){
+        Prato prato = pratoRepository.findById(id).orElsethrow();
+        prato.desativarPrato();
+        return pratoRepository.save(prato);
+    }
     
+    @PatchMapping("/{id}")
+    public ResponseEntity<Prato> atualizarPrato(@PathVariable int id, @RequestBody Map<String, Object> campos) {
+    
+        return pratoRepository.findById(id).map(pratoExistente -> {
+            
+            campos.forEach((nomeCampo, valorCampo) -> {
+                Field field = ReflectionUtils.findField(Prato.class, nomeCampo);
+                if (field != null) {
+                    field.setAccessible(true);
+                    
+                    Object valorFinal = valorCampo;
+                    if (field.getType() == float.class && valorCampo instanceof Double) {
+                        valorFinal = ((Double) valorCampo).floatValue();
+                    }
+                    
+                    ReflectionUtils.setField(field, pratoExistente, valorFinal);
+                }
+            });
+
+            Prato atualizado = pratoRepository.save(pratoExistente);
+            return ResponseEntity.ok(atualizado);
+            
+        }).orElse(ResponseEntity.notFound().build());
+    }
     
 }
