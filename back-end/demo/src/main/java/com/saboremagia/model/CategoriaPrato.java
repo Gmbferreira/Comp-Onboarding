@@ -6,9 +6,8 @@ public enum CategoriaPrato {
     SOBREMESA(2), 
     ACOMPANHAMENTO(3), 
     BEBIDA(4);
-    
-    private int id;
-    
+
+    private final int id;
     CategoriaPrato(int id){
         this.id = id;
     }
