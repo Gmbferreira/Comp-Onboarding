@@ -1,6 +1,8 @@
-package com.saboremagia.model;
+
+package com.saboremagia.demo.model;
 
 import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,3 +44,4 @@ public class Pedido {
         this.cliente = cliente;
     }
 }
+

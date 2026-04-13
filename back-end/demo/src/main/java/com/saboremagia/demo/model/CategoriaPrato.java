@@ -1,4 +1,4 @@
-package com.saboremagia.model;
+package com.saboremagia.demo.model;
 
 public enum CategoriaPrato {
 

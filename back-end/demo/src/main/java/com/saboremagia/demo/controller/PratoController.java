@@ -1,4 +1,4 @@
-package com.saboremagia.controller;
+package com.saboremagia.demo.controller;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.saboremagia.model.Prato;
-import com.saboremagia.repository.PratoRepository;
+import com.saboremagia.demo.model.Prato;
+import com.saboremagia.demo.repository.PratoRepository;
 
 
 
