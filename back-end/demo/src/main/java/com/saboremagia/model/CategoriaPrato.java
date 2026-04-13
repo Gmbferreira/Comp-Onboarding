@@ -1,12 +1,14 @@
 package com.saboremagia.model;
 
-import jakarta.persistence.Entity;
-
-@Entity
 public enum CategoriaPrato {
 
-    REFEICAO(1), SOBREMESA(2), ACOMPANHAMENTO(3), BEBIDA(4);
+    REFEICAO(1), 
+    SOBREMESA(2), 
+    ACOMPANHAMENTO(3), 
+    BEBIDA(4);
+    
     private int id;
+    
     CategoriaPrato(int id){
         this.id = id;
     }
