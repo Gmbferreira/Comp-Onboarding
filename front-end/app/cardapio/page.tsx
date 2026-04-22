@@ -26,7 +26,12 @@ export default function Page() {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        links={[
+          { href: "/cardapio", title: "Cardápio" },
+          { href: "/lista-produtos", title: "Lista de produtos" },
+        ]}
+      />
       <div className="min-h-screen bg-[#F5F5ED] p-4 lg:p-8">
         <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-12 gap-8">
           <div className="order-1 lg:order-2 lg:col-span-4">
