@@ -16,21 +16,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saboremagia.demo.model.Prato;
-import com.saboremagia.demo.repository.PratoRepository;
 import com.saboremagia.demo.service.PratoService;
 
 @RestController
 @RequestMapping("/pratos")
 public class PratoController {
-    @Autowired
-    private PratoRepository pratoRepository;
 
     @Autowired
     private PratoService pratoService;
 
     @GetMapping
     public List<Prato> listarPratos() {
-        return pratoRepository.findAll();
+        return pratoService.listarPratos();
     }
 
     @GetMapping("/preco")
@@ -45,7 +42,7 @@ public class PratoController {
 
     @PostMapping
     public Prato criarPrato(@RequestBody Prato prato){
-        return pratoRepository.save(prato);
+        return pratoService.criarPrato(prato);
     }
 
     @PatchMapping("/{id}/ativar")

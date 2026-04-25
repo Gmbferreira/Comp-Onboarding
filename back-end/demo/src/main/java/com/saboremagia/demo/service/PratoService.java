@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.saboremagia.demo.model.CategoriaPrato;
 import com.saboremagia.demo.model.Prato;
@@ -18,6 +17,10 @@ import com.saboremagia.demo.repository.PratoRepository;
 public class PratoService {
     @Autowired
     private PratoRepository pratoRepository;
+
+    public List<Prato> listarPratos() {
+        return pratoRepository.findAll();
+    }
 
     public List<Prato> pratosPorPreco(float precoMin, float precoMax){
         return pratoRepository.findByPrecoBetween(precoMin, precoMax);
@@ -35,6 +38,10 @@ public class PratoService {
             throw new IllegalArgumentException("Categoria inválida: " + id);
         }
         return pratoRepository.findByCategoria(categoria);
+    }
+
+    public Prato criarPrato(Prato prato){
+        return pratoRepository.save(prato);
     }
 
     public Prato ativarPrato(int id){
@@ -72,7 +79,7 @@ public class PratoService {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<Void> apagarPrato(@PathVariable int id) {
+    public ResponseEntity<Void> apagarPrato(int id) {
 
         if (!pratoRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
