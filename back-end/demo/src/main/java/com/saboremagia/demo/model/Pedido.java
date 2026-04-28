@@ -45,7 +45,7 @@ public class Pedido {
 
     //Regra aleatória
     public float calcularFrete (){
-        return (valorItens() / 100) + 5;
+        return 10;
     }
 
     public float calcularTotal(){
@@ -61,7 +61,7 @@ public class Pedido {
 
     public int removerPrato(Prato prato){
         for(Prato p : pratos){
-            if(p == prato){
+            if(p.getId() == prato.getId()){
                 pratos.remove(prato);
             }
         }
@@ -74,14 +74,15 @@ public class Pedido {
     public int getId(){
         return id;
     }
-    public List<Prato> getPrato(){
+    
+    public List<Prato> getPratos(){
         return pratos;
     }
     public Cliente getCliente(){
         return cliente;
     }
 
-    public void setPrato(List<Prato> prato){
+    public void setPratos(List<Prato> prato){
         this.pratos = prato;  
     }
 
