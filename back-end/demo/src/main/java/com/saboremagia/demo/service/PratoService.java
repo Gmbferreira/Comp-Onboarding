@@ -26,18 +26,9 @@ public class PratoService {
         return pratoRepository.findByPrecoBetween(precoMin, precoMax);
     }
 
-    public List<Prato> buscarPorCategoria(int id){
-        CategoriaPrato categoria = null;
-        for(CategoriaPrato c : CategoriaPrato.values()){
-            if(c.getId() == id){
-                categoria = c;
-                break;
-            }
-        }
-        if(categoria == null){
-            throw new IllegalArgumentException("Categoria inválida: " + id);
-        }
-        return pratoRepository.findByCategoria(categoria);
+    public List<Prato> buscarPorCategoriaNome(String categoria){
+        CategoriaPrato cat = CategoriaPrato.valueOf(categoria.toUpperCase());
+        return pratoRepository.findByCategoria(cat);
     }
 
     public Prato criarPrato(Prato prato){

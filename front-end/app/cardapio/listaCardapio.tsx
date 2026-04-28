@@ -30,7 +30,8 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
   useEffect(() => {
     async function carregarDados() {
       try {
-        const response = await fetch(API_ROUTES.pratos.list);
+        const response = await fetch("http://localhost:8080/pratos");
+        console.log("STATUS:", response.status);
         if (!response.ok) throw new Error("Erro");
         const data = await response.json();
         setTodosPratos(data);

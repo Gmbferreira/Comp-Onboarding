@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.saboremagia.demo.model.Prato;
 import com.saboremagia.demo.service.PratoService;
+
+@CrossOrigin(origins = "http://localhost:3000")
 
 @RestController
 @RequestMapping("/pratos")
@@ -35,11 +38,11 @@ public class PratoController {
         return pratoService.pratosPorPreco(precoMin, precoMax);
     }
 
-    @GetMapping("/categoria/{id}")
-    public List<Prato> buscarPorCategoria(@PathVariable int id){
-        return pratoService.buscarPorCategoria(id);
+    @GetMapping("/categoria")
+        public List<Prato> buscarPorCategoria(@RequestParam String categoria){
+        return pratoService.buscarPorCategoriaNome(categoria);
     }
-
+    
     @PostMapping
     public Prato criarPrato(@RequestBody Prato prato){
         return pratoService.criarPrato(prato);

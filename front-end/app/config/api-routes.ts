@@ -1,12 +1,12 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = "http://localhost:8080";
 
 export const API_ROUTES = {
   // Endpoints relacionados aos produtos/cardápio
   pratos: {
-    list: `${BASE_URL}/api/pratos`,
-    getById: (id: number) => `${BASE_URL}/api/pratos/${id}`,
+    list: `${BASE_URL}/pratos`,
+    getById: (id: number) => `${BASE_URL}/pratos/${id}`,
     // Caso o backend suporte filtro via URL futuramente:
-    byCategory: (cat: string) => `${BASE_URL}/api/pratos?categoria=${cat}`,
+    byCategory: (cat: string) => `${BASE_URL}/pratos?categoria=${cat}`,
   },
 
   // Endpoints relacionados aos pedidos
