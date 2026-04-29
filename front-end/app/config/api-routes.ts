@@ -16,9 +16,15 @@ export const API_ROUTES = {
     getById: (id: string) => `${BASE_URL}/api/pedidos/${id}`,
   },
 
-  // Caso implementemos cadastro
+  //Endpoint de cadastro
   auth: {
-    login: `${BASE_URL}/api/auth/login`,
-    register: `${BASE_URL}/api/auth/register`,
+    cliente: {
+      login: "http://localhost:8080/cliente/login",
+      registro: "http://localhost:8080/cliente/registro",
+    },
+    admin: {
+      login: "http://localhost:8080/administrador/login",
+      registro: "http://localhost:8080/administrador/registro",
+    },
   },
 };
