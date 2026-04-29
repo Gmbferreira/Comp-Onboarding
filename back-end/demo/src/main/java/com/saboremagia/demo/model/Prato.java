@@ -6,23 +6,31 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column; 
+import jakarta.persistence.Lob;    
 
 @Entity
 public class Prato {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    
     private String nome;
     private String descricao;
     private float nota;
     private float preco;
+
+    @Lob 
+    @Column(columnDefinition = "TEXT") 
     private String imagem;
+
     @Enumerated(EnumType.STRING)
     private CategoriaPrato categoria;
+    
     private boolean ativo;
 
-
     //-----------------GETTERS E SETTERS-----------------
+    // (Mantenha todos os seus getters e setters como já estão)
     public int getId(){
         return id;
     }
@@ -77,4 +85,3 @@ public class Prato {
         this.ativo = false;
     }
 }
-

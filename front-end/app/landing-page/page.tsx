@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // 1. Adicionamos o useEffect e useState
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";

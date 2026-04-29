@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Prato } from "../schemas/cardapioSchemas";
 import { API_ROUTES } from "../config/api-routes";
-import { mockPratos } from "../mocks/cardapioMock";
-import ModalProduto from "./modalProduto";
+import ModalProduto, { PratoFormData } from "./modalProduto";
 
 export default function TabelaProdutos() {
   const [produtos, setProdutos] = useState<Prato[]>([]);
@@ -16,95 +15,81 @@ export default function TabelaProdutos() {
   const [produtoEmEdicao, setProdutoEmEdicao] = useState<Prato | null>(null);
 
   useEffect(() => {
-    async function carregarProdutos() {
-      try {
-        const res = await fetch(API_ROUTES.pratos.list);
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        setProdutos(data);
-      } catch {
-        console.warn("Usando mocks na listagem de produtos");
-        setProdutos(mockPratos);
-      } finally {
-        setCarregando(false);
-      }
-    }
     carregarProdutos();
   }, []);
 
-  const handleSalvar = async (dados: Partial<Prato>) => {
+  async function carregarProdutos() {
+    try {
+      const res = await fetch(API_ROUTES.pratos.list);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setProdutos(data);
+    } catch (err) {
+      toast.error("Erro ao carregar produtos do servidor.");
+    } finally {
+      setCarregando(false);
+    }
+  }
+
+  const handleSalvar = async (dados: PratoFormData) => {
     const isEdicao = !!produtoEmEdicao;
     const url = isEdicao
       ? API_ROUTES.pratos.getById(produtoEmEdicao!.id)
       : API_ROUTES.pratos.list;
-    const metodo = isEdicao ? "PUT" : "POST";
+    const metodo = isEdicao ? "PATCH" : "POST";
+
+    const formData = new FormData();
+
+    const { arquivoImagem, imagem, ...dadosParaOBackend } = dados;
+
+    const pratoBlob = new Blob([JSON.stringify(dadosParaOBackend)], {
+      type: "application/json",
+    });
+
+    formData.append("prato", pratoBlob);
+
+    if (arquivoImagem) {
+      formData.append("file", arquivoImagem);
+    }
 
     try {
       const res = await fetch(url, {
         method: metodo,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados),
+        body: formData,
       });
 
-      if (!res.ok) throw new Error("Erro ao salvar no servidor");
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Erro no servidor");
+      }
 
       const data = await res.json();
-      toast.success(
-        isEdicao
-          ? "Alterações salvas no servidor!"
-          : "Prato criado no servidor!",
-      );
+      toast.success(isEdicao ? "Prato atualizado!" : "Prato criado!");
 
       if (isEdicao) {
         setProdutos((prev) => prev.map((p) => (p.id === data.id ? data : p)));
       } else {
         setProdutos((prev) => [data, ...prev]);
       }
-    } catch (err) {
-      console.warn(
-        `Backend offline ao tentar ${isEdicao ? "editar" : "criar"}. Usando Mock.`,
-      );
 
-      if (isEdicao) {
-        setProdutos((prev) =>
-          prev.map((p) =>
-            p.id === produtoEmEdicao.id ? { ...p, ...dados } : p,
-          ),
-        );
-        toast.info("Modo Simulação: Atualizado apenas localmente.");
-      } else {
-        const novoMock = {
-          ...dados,
-          id: Math.floor(Math.random() * 1000),
-          nota: 5,
-          imagem: dados.imagem || "https://via.placeholder.com/150",
-        } as Prato;
-
-        setProdutos((prev) => [novoMock, ...prev]);
-        toast.info("Modo Simulação: Novo prato criado localmente.");
-      }
-    } finally {
       setModalAberto(false);
+    } catch (err: any) {
+      console.error("Erro no salvamento:", err);
+      toast.error(`Falha ao salvar: ${err.message}`);
     }
   };
 
   const handleRemover = async (id: number) => {
+    if (!confirm("Tem certeza que deseja excluir?")) return;
     try {
       const res = await fetch(API_ROUTES.pratos.getById(id), {
         method: "DELETE",
       });
-
-      if (!res.ok) throw new Error("Erro no servidor");
-
+      if (!res.ok) throw new Error();
       setProdutos((prev) => prev.filter((p) => p.id !== id));
-      toast.success("Prato removido do servidor com sucesso!");
-    } catch (err) {
-      console.warn("Backend offline ao tentar remover. Executando via Mock.");
-
-      setProdutos((prev) => prev.filter((p) => p.id !== id));
-      toast.warning(
-        "Servidor indisponível. Item removido apenas localmente (Mock).",
-      );
+      toast.success("Removido com sucesso!");
+    } catch {
+      toast.error("Erro ao remover do servidor.");
     }
   };
 
@@ -117,22 +102,15 @@ export default function TabelaProdutos() {
   }
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm p-6 lg:p-8">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-        <div>
-          <h2 className="text-3xl font-bold text-gray-800">
-            Gerenciar Produtos
-          </h2>
-          <p className="text-gray-500">
-            Adicione, edite ou remova pratos do sistema.
-          </p>
-        </div>
+    <div className="bg-white rounded-3xl shadow-sm p-8">
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold">Gerenciar Produtos</h2>
         <Button
           onClick={() => {
             setProdutoEmEdicao(null);
             setModalAberto(true);
           }}
-          className="bg-[#4A7C44] hover:bg-[#3d6638] rounded-full px-6 py-6 text-lg gap-2 transition-all shadow-md"
+          className="bg-[#4A7C44] rounded-full gap-2"
         >
           <Plus size={20} /> Novo Prato
         </Button>
@@ -142,42 +120,28 @@ export default function TabelaProdutos() {
         {produtos.map((prato) => (
           <div
             key={prato.id}
-            className="flex flex-col sm:flex-row items-center justify-between p-4 border border-gray-100 rounded-2xl hover:bg-[#F5F5ED]/50 transition-all group"
+            className="flex items-center justify-between p-4 border rounded-2xl hover:bg-gray-50 transition-all"
           >
-            <div className="flex items-center gap-5 w-full sm:w-auto">
-              <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-200">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 border">
                 {prato.imagem ? (
                   <img
                     src={prato.imagem}
-                    alt={prato.nome}
                     className="w-full h-full object-cover"
+                    alt={prato.nome}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <ImageIcon size={24} />
-                  </div>
+                  <ImageIcon className="m-auto mt-4 text-gray-400" />
                 )}
               </div>
-
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-lg text-gray-800">
-                    {prato.nome}
-                  </h3>
-                  <span className="text-[10px] bg-[#D1E7D3] text-[#4A7C44] px-2 py-0.5 rounded-full font-bold uppercase">
-                    {prato.categoria}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 line-clamp-1 max-w-md">
-                  {prato.descricao}
-                </p>
-                <p className="font-bold text-[#4A7C44] mt-1">
+              <div>
+                <h3 className="font-bold">{prato.nome}</h3>
+                <p className="text-sm text-gray-500">
                   R$ {prato.preco.toFixed(2)}
                 </p>
               </div>
             </div>
-
-            <div className="flex gap-2 mt-4 sm:mt-0 w-full sm:w-auto justify-end border-t sm:border-none pt-3 sm:pt-0">
+            <div className="flex gap-2">
               <Button
                 variant="ghost"
                 size="icon"
@@ -185,7 +149,7 @@ export default function TabelaProdutos() {
                   setProdutoEmEdicao(prato);
                   setModalAberto(true);
                 }}
-                className="text-blue-600 hover:bg-blue-50 hover:text-blue-700 rounded-xl"
+                className="text-blue-600"
               >
                 <Edit size={20} />
               </Button>
@@ -193,19 +157,13 @@ export default function TabelaProdutos() {
                 variant="ghost"
                 size="icon"
                 onClick={() => handleRemover(prato.id)}
-                className="text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl"
+                className="text-red-500"
               >
                 <Trash2 size={20} />
               </Button>
             </div>
           </div>
         ))}
-
-        {produtos.length === 0 && (
-          <div className="text-center py-20 text-gray-400 italic">
-            Nenhum produto cadastrado no momento.
-          </div>
-        )}
       </div>
 
       <ModalProduto

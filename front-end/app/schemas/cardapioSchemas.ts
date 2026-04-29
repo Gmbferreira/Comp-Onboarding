@@ -9,3 +9,7 @@ export interface Prato {
   imagem: string;
   categoria: CategoriaPrato;
 }
+
+export interface PratoFormData extends Partial<Prato> {
+  arquivoImagem?: File;
+}

@@ -1,25 +1,20 @@
 package com.saboremagia.demo.controller;
 
 import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.saboremagia.demo.model.Prato;
 import com.saboremagia.demo.service.PratoService;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/pratos")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PratoController {
 
     @Autowired
@@ -40,8 +35,22 @@ public class PratoController {
         return pratoService.buscarPorCategoria(id);
     }
 
-    @PostMapping
-    public Prato criarPrato(@RequestBody Prato prato){
+    
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public Prato criarPrato(
+            @RequestPart("prato") String pratoJson,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
+        
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        Prato prato = objectMapper.readValue(pratoJson, Prato.class);
+
+        
+        if (file != null && !file.isEmpty()) {
+            String base64 = Base64.getEncoder().encodeToString(file.getBytes());
+            prato.setImagem("data:" + file.getContentType() + ";base64," + base64);
+        }
+
         return pratoService.criarPrato(prato);
     }
 
@@ -55,8 +64,21 @@ public class PratoController {
         return pratoService.desativarPrato(id);
     }
     
-    @PatchMapping("/{id}")
-    public ResponseEntity<Prato> atualizarPrato(@PathVariable int id, @RequestBody Map<String, Object> campos) {
+    
+    @PatchMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<Prato> atualizarPrato(
+            @PathVariable int id, 
+            @RequestPart("prato") String pratoJson,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
+        
+        ObjectMapper objectMapper = new ObjectMapper();
+        java.util.Map<String, Object> campos = objectMapper.readValue(pratoJson, java.util.Map.class);
+
+        if (file != null && !file.isEmpty()) {
+            String base64 = Base64.getEncoder().encodeToString(file.getBytes());
+            campos.put("imagem", "data:" + file.getContentType() + ";base64," + base64);
+        }
+
         return pratoService.atualizarPrato(id, campos);
     }
 
@@ -65,4 +87,3 @@ public class PratoController {
         return pratoService.apagarPrato(id);
     }
 }
-

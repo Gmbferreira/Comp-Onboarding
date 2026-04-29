@@ -14,15 +14,11 @@ import { toast } from "sonner";
 import { Mail, Lock, User, Phone, Loader2 } from "lucide-react";
 import { API_ROUTES } from "../config/api-routes";
 
-// --- SCHEMAS ZOD (Baseados nas suas Interfaces) ---
-
-// Corresponde ao LoginDTO
 const loginSchema = z.object({
   email: z.string().email("Insira um e-mail válido"),
   senha: z.string().min(1, "A senha é obrigatória"),
 });
 
-// Corresponde ao Usuario (sem ID e sem Endereço para o cadastro)
 const registroSchema = z.object({
   nome: z.string().min(3, "O nome deve ter no mínimo 3 caracteres"),
   email: z.string().email("E-mail inválido"),
@@ -45,12 +41,9 @@ export default function FormLogin() {
     resolver: zodResolver(registroSchema),
   });
 
-  // --- FUNÇÕES DE SUBMISSÃO ---
-
   const onLogin = async (data: LoginData) => {
     setLoading(true);
     try {
-      // 1. Tenta login como CLIENTE primeiro
       const resCliente = await fetch(API_ROUTES.auth.cliente.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -60,12 +53,10 @@ export default function FormLogin() {
       if (resCliente.ok) {
         const cliente = await resCliente.json();
         toast.success(`Bem-vindo, ${cliente.nome}!`);
-        router.push("/landing-page"); // CLIENTE vai para a landing-page
-        return; // Finaliza aqui se deu certo
+        router.push("/landing-page");
+        return;
       }
 
-      // 2. Se falhou como cliente, tenta como ADMINISTRADOR
-      // Nota: Certifique-se de que API_ROUTES.auth.admin.login aponta para /administrador/login
       const resAdmin = await fetch(API_ROUTES.auth.admin.login, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -75,11 +66,10 @@ export default function FormLogin() {
       if (resAdmin.ok) {
         const admin = await resAdmin.json();
         toast.success(`Acesso administrativo: ${admin.nome}`);
-        router.push("/lista-produtos"); // ADMIN vai para lista-produtos
+        router.push("/lista-produtos");
         return;
       }
 
-      // 3. Se ambos falharem
       throw new Error("E-mail ou senha incorretos.");
     } catch (error: any) {
       toast.error(error.message || "Erro ao realizar login.");
@@ -105,7 +95,6 @@ export default function FormLogin() {
       toast.success("Conta criada com sucesso!");
       registroForm.reset();
 
-      // Cadastro de cliente sempre redireciona para a landing-page
       router.push("/landing-page");
     } catch (error: any) {
       toast.error(error.message || "Erro ao cadastrar.");

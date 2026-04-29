@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 import { ItemPedido, PedidoEnvio } from "../schemas/pedidosSchemas";
-import { API_ROUTES } from "../config/api-routes"; // Certifique-se de importar as rotas
+import { API_ROUTES } from "../config/api-routes";
 
 interface ListaPedidosProps {
   itens: ItemPedido[];
