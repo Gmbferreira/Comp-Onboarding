@@ -1,8 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, MapPin } from "lucide-react"; // Importei MapPin para o ícone
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ItemPedido, PedidoEnvio } from "../schemas/pedidosSchemas";
 import { API_ROUTES } from "../config/api-routes";
@@ -13,12 +15,40 @@ interface ListaPedidosProps {
 }
 
 export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
+  const [endereco, setEndereco] = useState("");
   const taxaEntrega = 10.0;
+
   const subtotal = itens.reduce(
     (acc, item) => acc + item.preco * item.quantidade,
     0,
   );
   const total = subtotal > 0 ? subtotal + taxaEntrega : 0;
+
+  useEffect(() => {
+    async function buscarEnderecoUsuario() {
+      const usuarioSalvo = localStorage.getItem("usuarioLogado");
+      if (usuarioSalvo) {
+        const usuario = JSON.parse(usuarioSalvo);
+
+        if (usuario.endereco) {
+          setEndereco(usuario.endereco);
+        } else {
+          try {
+            const res = await fetch(
+              `${API_ROUTES.auth.cliente.login}?email=${usuario.email}`,
+            );
+            if (res.ok) {
+              const data = await res.json();
+              if (data.endereco) setEndereco(data.endereco);
+            }
+          } catch (err) {
+            console.error("Erro ao buscar endereço atualizado", err);
+          }
+        }
+      }
+    }
+    buscarEnderecoUsuario();
+  }, []);
 
   const alterarQuantidade = (id: number, delta: number) => {
     setItens((prev) =>
@@ -34,11 +64,22 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
 
   const finalizarPedido = async () => {
     if (itens.length === 0) {
-      toast.error("Seu pedido está vazio! Adicione itens antes de confirmar.");
+      toast.error("Seu pedido está vazio!");
       return;
     }
 
-    const pedido: PedidoEnvio = { itens, subtotal, taxaEntrega, total };
+    if (!endereco || endereco.trim() === "") {
+      toast.error("Por favor, informe um endereço para entrega.");
+      return;
+    }
+
+    const pedido: any = {
+      itens,
+      subtotal,
+      taxaEntrega,
+      total,
+      endereco,
+    };
 
     try {
       const res = await fetch(API_ROUTES.pedidos.create, {
@@ -52,10 +93,8 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
       toast.success("Pedido confirmado! Já estamos preparando sua refeição.");
       setItens([]);
     } catch (err) {
-      toast.warning("Servidor offline. tente novamente mais tarde.");
-      console.group("--- Simulação de Envio (JSON) ---");
-      console.log("Payload:", pedido);
-      console.groupEnd();
+      toast.warning("Servidor offline. O pedido foi logado no console.");
+      console.log("Simulação de Envio:", pedido);
     }
   };
 
@@ -71,7 +110,8 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
         <h2 className="text-2xl font-bold text-gray-800">Seu Pedido</h2>
       </div>
 
-      <div className="space-y-6 mb-8 min-h-[100px]">
+      {/* Lista de Itens */}
+      <div className="space-y-6 mb-8 min-h-[50px] max-h-[300px] overflow-y-auto no-scrollbar">
         {itens.length === 0 && (
           <p className="text-gray-500 text-sm italic text-center">
             Nenhum item selecionado
@@ -101,6 +141,20 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mb-8 p-4 bg-white/50 rounded-2xl border border-green-200">
+        <div className="flex items-center gap-2 mb-2 text-[#4A7C44] font-bold">
+          <MapPin size={18} />
+          <Label htmlFor="endereco">Endereço de Entrega</Label>
+        </div>
+        <Input
+          id="endereco"
+          placeholder="Rua, número, bairro..."
+          value={endereco}
+          onChange={(e) => setEndereco(e.target.value)}
+          className="bg-white border-none rounded-xl focus-visible:ring-[#4A7C44]"
+        />
       </div>
 
       <div className="space-y-3 text-gray-700 font-semibold border-t border-green-300 pt-6">
