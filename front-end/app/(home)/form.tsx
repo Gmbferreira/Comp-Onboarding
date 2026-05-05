@@ -76,6 +76,7 @@ export default function FormLogin() {
     } finally {
       setLoading(false);
     }
+    localStorage.setItem("usuarioLogado", JSON.stringify(data));
   };
 
   const onCadastro = async (data: RegistroData) => {
@@ -101,6 +102,7 @@ export default function FormLogin() {
     } finally {
       setLoading(false);
     }
+    localStorage.setItem("usuarioLogado", JSON.stringify(data));
   };
 
   return (

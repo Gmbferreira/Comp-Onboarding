@@ -73,28 +73,50 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
       return;
     }
 
-    const pedido: any = {
-      itens,
-      subtotal,
-      taxaEntrega,
-      total,
+    const usuarioSalvo = localStorage.getItem("usuarioLogado");
+
+    if (!usuarioSalvo) {
+      toast.error("Você precisa estar logado!");
+      return;
+    }
+
+    const usuario = JSON.parse(usuarioSalvo);
+
+    
+    const pratos: { id: number }[] = [];
+
+    itens.forEach((item) => {
+      for (let i = 0; i < item.quantidade; i++) {
+        pratos.push({ id: item.idPrato });
+      }
+    });
+
+    const pedido = {
+      cliente: { id: usuario.id },
       endereco,
+      pratos,
     };
 
     try {
       const res = await fetch(API_ROUTES.pedidos.create, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(pedido),
       });
 
-      if (!res.ok) throw new Error("Erro no servidor");
+      if (!res.ok) {
+        const erro = await res.text();
+        throw new Error(erro);
+      }
 
-      toast.success("Pedido confirmado! Já estamos preparando sua refeição.");
+      toast.success("Pedido confirmado!");
       setItens([]);
-    } catch (err) {
-      toast.warning("Servidor offline. O pedido foi logado no console.");
-      console.log("Simulação de Envio:", pedido);
+
+    } catch (err: any) {
+      toast.error(err.message || "Erro ao enviar pedido");
+      console.error(err);
     }
   };
 
