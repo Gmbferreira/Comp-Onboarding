@@ -3,6 +3,7 @@ package com.saboremagia.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,12 +11,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.saboremagia.demo.model.Cliente;
 import com.saboremagia.demo.service.ClienteService;
 
+import java.util.List;
+
+import com.saboremagia.demo.repository.ClienteRepository;
+
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
 
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
+
+    @GetMapping
+    public List<Cliente> listarCliente(){
+        return clienteRepository.findAll();
+    }
 
     @PostMapping("/registro")
     public ResponseEntity<?> registrarCliente(@RequestBody Cliente cliente) {

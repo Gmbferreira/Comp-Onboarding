@@ -3,6 +3,8 @@ package com.saboremagia.demo.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -13,6 +15,7 @@ public class Cliente extends Usuario {
     private String endereco;
     
     @OneToMany(mappedBy = "cliente")
+    @JsonIgnore
     private List<Pedido> pedidos;
 
     //-----------------GETTERS E SETTERS-----------------
