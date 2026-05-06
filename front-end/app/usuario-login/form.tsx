@@ -45,6 +45,7 @@ export default function LoginForm() {
           Cookies.set("auth-token", String(cliente.id), { expires: 7 });
           Cookies.set("user-role", "CLIENTE", { expires: 7 });
           Cookies.set("user-name", cliente.nome, { expires: 7 });
+          localStorage.setItem("usuarioLogado", JSON.stringify(cliente));
         }
 
         toast.success(`Bem-vindo, ${cliente.nome}!`, { position: "top-center" });

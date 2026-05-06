@@ -48,6 +48,7 @@ export default function CadastroForm() {
         Cookies.set("auth-token", String(clienteSalvo.id), { expires: 7 });
         Cookies.set("user-role", "CLIENTE", { expires: 7 });
         Cookies.set("user-name", clienteSalvo.nome, { expires: 7 });
+        localStorage.setItem("usuarioLogado", JSON.stringify(clienteSalvo));
       }
 
       toast.success(`Bem-vindo, ${clienteSalvo.nome}! Conta criada com sucesso.`, { 

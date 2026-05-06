@@ -12,9 +12,9 @@ export const API_ROUTES = {
 
   // Endpoints de pedidos
   pedidos: {
-    create: `${BASE_URL}/api/pedidos`,
-    list: `${BASE_URL}/api/pedidos`,
-    getById: (id: string) => `${BASE_URL}/api/pedidos/${id}`,
+    create: `${BASE_URL}/pedidos`,
+    list: `${BASE_URL}/pedidos`,
+    getById: (id: string) => `${BASE_URL}/pedidos/${id}`,
   },
 
   //Endpoint de cadastro

@@ -24,32 +24,6 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
   );
   const total = subtotal > 0 ? subtotal + taxaEntrega : 0;
 
-  useEffect(() => {
-    async function buscarEnderecoUsuario() {
-      const usuarioSalvo = localStorage.getItem("usuarioLogado");
-      if (usuarioSalvo) {
-        const usuario = JSON.parse(usuarioSalvo);
-
-        if (usuario.endereco) {
-          setEndereco(usuario.endereco);
-        } else {
-          try {
-            const res = await fetch(
-              `${API_ROUTES.auth.cliente.login}?email=${usuario.email}`,
-            );
-            if (res.ok) {
-              const data = await res.json();
-              if (data.endereco) setEndereco(data.endereco);
-            }
-          } catch (err) {
-            console.error("Erro ao buscar endereço atualizado", err);
-          }
-        }
-      }
-    }
-    buscarEnderecoUsuario();
-  }, []);
-
   const alterarQuantidade = (id: number, delta: number) => {
     setItens((prev) =>
       prev
@@ -62,6 +36,16 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
     );
   };
 
+  useEffect(() => {
+    const usuarioSalvo = localStorage.getItem("usuarioLogado");
+    if (usuarioSalvo) {
+      const usuario = JSON.parse(usuarioSalvo);
+      if (usuario.endereco) {
+        setEndereco(usuario.endereco);
+      }
+    }
+  }, []);
+
   const finalizarPedido = async () => {
     if (itens.length === 0) {
       toast.error("Seu pedido está vazio!");
@@ -73,12 +57,21 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
       return;
     }
 
-    const pedido: any = {
-      itens,
-      subtotal,
-      taxaEntrega,
-      total,
-      endereco,
+    const usuarioSalvo = localStorage.getItem("usuarioLogado");
+    if (!usuarioSalvo) {
+      toast.error("Você precisa estar logado para fazer um pedido.");
+      return;
+    }
+
+    const usuario = JSON.parse(usuarioSalvo);
+
+    const pedido = {
+      clienteId: Number(usuario.id),
+      itens: itens.map((item) => ({
+        pratoId: Number(item.idPrato),
+        quantidade: item.quantidade,
+      })),
+      endereco: endereco,
     };
 
     try {
