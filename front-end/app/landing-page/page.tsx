@@ -31,14 +31,14 @@ export default function HomePage() {
       <main className="min-h-screen bg-[#F5F5ED] flex flex-col items-center pt-8 md:pt-16 px-4">
         <div className="w-full max-w-5xl px-2 lg:px-0">
           <Carousel
-            className="w-full overflow-hidden rounded-[2rem] shadow-2xl border-8 border-white"
+            className="w-full overflow-hidden rounded-[2rem] shadow-2xl border-8 border-white lg:max-w-3xl mx-auto md:max-w-xl sm:max-w-md"
             opts={{ loop: true }}
           >
             <CarouselContent>
               {destaques.length > 0 ? (
                 destaques.map((prato) => (
                   <CarouselItem key={prato.id}>
-                    <div className="relative h-[250px] sm:h-[400px] md:h-[500px] w-full">
+                    <div className="relative h-[250px] sm:h-[150px] md:h-[300px] w-full">
                       <img
                         src={prato.imagem}
                         alt={prato.nome}
@@ -74,7 +74,7 @@ export default function HomePage() {
 
           <div className="flex justify-center">
             <Link href="/cardapio">
-              <Button className="bg-[#4A7C44] hover:bg-[#3d6638] text-white text-3xl md:text-5xl px-12 py-10 md:px-16 md:py-14 rounded-[2rem] shadow-xl transition-all hover:scale-105 active:scale-95 border-b-[6px] border-[#2d4d29] font-bold">
+              <Button className="bg-[#4A7C44] hover:bg-[#3d6638] text-white text-3xl md:text-4xl px-12 py-10 md:px-16 md:py-14 rounded-[2rem] shadow-xl transition-all hover:scale-105 active:scale-95 border-b-[6px] border-[#2d4d29] font-bold">
                 Peça Agora
               </Button>
             </Link>

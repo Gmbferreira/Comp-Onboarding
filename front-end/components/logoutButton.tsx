@@ -13,7 +13,7 @@ export default function LogoutButton() {
 
     toast.success("Sessão encerrada com sucesso!");
 
-    router.push("/");
+    router.push("/usuario-login");
   };
 
   return (
