@@ -3,7 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Star, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Star,
+  Loader2,
+  ChevronLeft,
+  ChevronRight,
+  ImageIcon,
+} from "lucide-react";
 import { CategoriaPrato, Prato } from "../schemas/cardapioSchemas";
 import { API_ROUTES } from "../config/api-routes";
 import { mockPratos } from "../mocks/cardapioMock";
@@ -88,12 +94,19 @@ export default function ListaCardapio() {
             key={prato.id}
             className="border-none shadow-md overflow-hidden bg-white rounded-3xl"
           >
-            <div className="relative h-48 lg:h-56 w-full">
-              <img
-                src={prato.imagem}
-                alt={prato.nome}
-                className="w-full h-full object-cover"
-              />
+            <div className="relative h-48 lg:h-56 w-full bg-gray-100">
+              {prato.imagem ? (
+                <img
+                  src={prato.imagem}
+                  alt={prato.nome}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <ImageIcon className="text-gray-300" size={48} />
+                  {/* Importe o ImageIcon de 'lucide-react' no topo do arquivo */}
+                </div>
+              )}
             </div>
 
             <CardContent className="p-5">
@@ -117,7 +130,7 @@ export default function ListaCardapio() {
                       key={i}
                       size={14}
                       className={
-                        i < prato.nota
+                        i < (prato.nota ?? 5)
                           ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-200"
                       }

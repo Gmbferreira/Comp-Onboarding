@@ -20,12 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CategoriaPrato, Prato } from "../schemas/cardapioSchemas";
-import { Upload, X } from "lucide-react";
-
-export interface PratoFormData extends Partial<Prato> {
-  arquivoImagem?: File;
-}
+import {
+  CategoriaPrato,
+  Prato,
+  PratoFormData,
+} from "../schemas/cardapioSchemas";
+import { Upload, X, Pencil } from "lucide-react";
 
 interface ModalProdutoProps {
   isOpen: boolean;
@@ -46,11 +46,16 @@ export default function ModalProduto({
     preco: 0,
     categoria: "REFEICAO",
     imagem: "",
+    nota: 5,
+    ativo: true,
   });
 
   useEffect(() => {
     if (pratoParaEditar) {
-      setFormData(pratoParaEditar);
+      setFormData({
+        ...pratoParaEditar,
+        arquivoImagem: undefined,
+      });
     } else {
       setFormData({
         nome: "",
@@ -58,6 +63,8 @@ export default function ModalProduto({
         preco: 0,
         categoria: "REFEICAO",
         imagem: "",
+        nota: 5,
+        ativo: true,
       });
     }
   }, [pratoParaEditar, isOpen]);
@@ -79,23 +86,26 @@ export default function ModalProduto({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[450px] bg-[#F5F5ED] rounded-[2rem]">
+      <DialogContent className="sm:max-w-[450px] bg-[#F5F5ED] rounded-[2rem] border-none shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-[#4A7C44] text-2xl font-bold">
             {pratoParaEditar ? "Editar Prato" : "Novo Prato"}
           </DialogTitle>
-          <DialogDescription>
-            Preencha os detalhes do prato. A imagem será salva no servidor.
+          <DialogDescription className="text-gray-600">
+            Preencha os detalhes abaixo. A alteração da foto é feita passando o
+            mouse sobre a imagem.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-5 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="nome">Nome</Label>
+              <Label htmlFor="nome" className="font-bold">
+                Nome
+              </Label>
               <Input
                 id="nome"
-                className="bg-white"
+                className="bg-white rounded-xl border-none"
                 value={formData.nome}
                 onChange={(e) =>
                   setFormData({ ...formData, nome: e.target.value })
@@ -103,11 +113,13 @@ export default function ModalProduto({
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="preco">Preço (R$)</Label>
+              <Label htmlFor="preco" className="font-bold">
+                Preço (R$)
+              </Label>
               <Input
                 id="preco"
                 type="number"
-                className="bg-white"
+                className="bg-white rounded-xl border-none"
                 value={formData.preco}
                 onChange={(e) =>
                   setFormData({ ...formData, preco: Number(e.target.value) })
@@ -117,14 +129,14 @@ export default function ModalProduto({
           </div>
 
           <div className="grid gap-2">
-            <Label>Categoria</Label>
+            <Label className="font-bold">Categoria</Label>
             <Select
               value={formData.categoria}
               onValueChange={(val: CategoriaPrato) =>
                 setFormData({ ...formData, categoria: val })
               }
             >
-              <SelectTrigger className="bg-white">
+              <SelectTrigger className="bg-white rounded-xl border-none">
                 <SelectValue placeholder="Selecione..." />
               </SelectTrigger>
               <SelectContent className="bg-white">
@@ -136,20 +148,35 @@ export default function ModalProduto({
           </div>
 
           <div className="grid gap-2">
-            <Label>Imagem do Produto</Label>
+            <Label className="font-bold">Imagem do Produto</Label>
             <div className="flex flex-col items-center gap-4">
               {formData.imagem ? (
-                <div className="relative w-full h-40 rounded-xl overflow-hidden border">
+                <div className="relative w-full h-44 rounded-2xl overflow-hidden border group shadow-inner">
                   <img
                     src={formData.imagem}
                     className="w-full h-full object-cover"
                     alt="Preview"
                   />
+
+                  {/* Botão Alterar Foto (Só aparece no hover) */}
+                  <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    <div className="flex items-center gap-2 text-white font-bold bg-black/20 p-2 rounded-lg">
+                      <Pencil size={18} />
+                      Alterar Foto
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+
                   <Button
                     type="button"
                     variant="destructive"
                     size="icon"
-                    className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                    className="absolute top-2 right-2 h-8 w-8 rounded-full shadow-lg"
                     onClick={() =>
                       setFormData({
                         ...formData,
@@ -162,9 +189,9 @@ export default function ModalProduto({
                   </Button>
                 </div>
               ) : (
-                <label className="w-full h-40 flex flex-col items-center justify-center border-2 border-dashed rounded-xl bg-white cursor-pointer hover:bg-gray-50">
-                  <Upload className="text-gray-400" />
-                  <span className="text-sm text-gray-500">
+                <label className="w-full h-44 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl bg-white cursor-pointer hover:bg-gray-50 transition-colors">
+                  <Upload className="text-gray-400 mb-2" />
+                  <span className="text-sm text-gray-500 font-medium">
                     Clique para subir foto
                   </span>
                   <input
@@ -179,10 +206,12 @@ export default function ModalProduto({
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="desc">Descrição</Label>
+            <Label htmlFor="desc" className="font-bold">
+              Descrição
+            </Label>
             <Textarea
               id="desc"
-              className="bg-white resize-none"
+              className="bg-white rounded-xl border-none resize-none"
               rows={3}
               value={formData.descricao}
               onChange={(e) =>
@@ -192,12 +221,17 @@ export default function ModalProduto({
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button
+            variant="ghost"
+            onClick={onClose}
+            className="rounded-xl font-bold"
+          >
             Cancelar
           </Button>
           <Button
-            className="bg-[#4A7C44] hover:bg-[#3d6638]"
+            type="button"
+            className="bg-[#4A7C44] hover:bg-[#3d6638] rounded-xl font-bold px-6"
             onClick={() => onSave(formData)}
           >
             {pratoParaEditar ? "Salvar Alterações" : "Cadastrar Prato"}

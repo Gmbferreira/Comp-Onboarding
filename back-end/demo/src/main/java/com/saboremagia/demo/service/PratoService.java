@@ -57,27 +57,37 @@ public class PratoService {
     }
 
     public ResponseEntity<Prato> atualizarPrato(int id, Map<String, Object> campos) {
-        return pratoRepository.findById(id).map(pratoExistente -> {
-            
-            campos.forEach((nomeCampo, valorCampo) -> {
-                Field field = ReflectionUtils.findField(Prato.class, nomeCampo);
-                if (field != null) {
-                    field.setAccessible(true);
-                    
-                    Object valorFinal = valorCampo;
-                    if (field.getType() == float.class && valorCampo instanceof Double) {
-                        valorFinal = ((Double) valorCampo).floatValue();
-                    }
-                    
-                    ReflectionUtils.setField(field, pratoExistente, valorFinal);
-                }
-            });
+    return pratoRepository.findById(id).map(pratoExistente -> {
+        
+        campos.forEach((nomeCampo, valorCampo) -> {
+           
+            if (nomeCampo.equals("id")) return;
 
-            Prato atualizado = pratoRepository.save(pratoExistente);
-            return ResponseEntity.ok(atualizado);
-            
-        }).orElse(ResponseEntity.notFound().build());
-    }
+            Field field = ReflectionUtils.findField(Prato.class, nomeCampo);
+            if (field != null) {
+                field.setAccessible(true);
+                Object valorFinal = valorCampo;
+
+                
+                if ((field.getType() == float.class || field.getType() == Float.class) 
+                    && valorCampo instanceof Double) {
+                    valorFinal = ((Double) valorCampo).floatValue();
+                }
+
+                
+                if (field.getType().isEnum() && valorCampo instanceof String) {
+                    valorFinal = Enum.valueOf((Class<Enum>) field.getType(), (String) valorCampo);
+                }
+                
+                ReflectionUtils.setField(field, pratoExistente, valorFinal);
+            }
+        });
+
+        Prato atualizado = pratoRepository.save(pratoExistente);
+        return ResponseEntity.ok(atualizado);
+        
+    }).orElse(ResponseEntity.notFound().build());
+}
 
     public ResponseEntity<Void> apagarPrato(int id) {
 

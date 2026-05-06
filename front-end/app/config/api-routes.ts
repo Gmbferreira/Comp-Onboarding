@@ -6,6 +6,8 @@ export const API_ROUTES = {
     getById: (id: number) => `${BASE_URL}/pratos/${id}`,
 
     byCategory: (id: number) => `${BASE_URL}/pratos/categoria/${id}`,
+    ativar: (id: number) => `${BASE_URL}/pratos/${id}/ativar`,
+    desativar: (id: number) => `${BASE_URL}/pratos/${id}/desativar`,
   },
 
   // Endpoints de pedidos

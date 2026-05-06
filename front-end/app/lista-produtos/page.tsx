@@ -8,8 +8,8 @@ export default function Page() {
       <Navbar
         links={[{ href: "/lista-produtos", title: "Lista de produtos" }]}
       />
-      <main className="min-h-screen bg-[#F5F5ED] p-4 lg:p-8">
-        <div className="max-w-5xl mx-auto">
+      <main className="min-h-screen bg-[#E5E5E5] p-6 lg:p-12">
+        <div className="max-w-7xl mx-auto">
           <TabelaProdutos />
         </div>
       </main>

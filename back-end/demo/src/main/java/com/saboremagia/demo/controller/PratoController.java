@@ -1,7 +1,11 @@
 package com.saboremagia.demo.controller;
 
 import java.util.List;
+import java.util.Base64;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.saboremagia.demo.model.Prato;
 import com.saboremagia.demo.service.PratoService;
-import java.util.Base64;
 
 @RestController
 @RequestMapping("/pratos")
@@ -35,23 +38,28 @@ public class PratoController {
         return pratoService.buscarPorCategoria(id);
     }
 
-    
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public Prato criarPrato(
+    public ResponseEntity<?> criarPrato(
             @RequestPart("prato") String pratoJson,
-            @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         
-        
-        ObjectMapper objectMapper = new ObjectMapper();
-        Prato prato = objectMapper.readValue(pratoJson, Prato.class);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            
+            Prato prato = objectMapper.readValue(pratoJson, Prato.class);
 
-        
-        if (file != null && !file.isEmpty()) {
-            String base64 = Base64.getEncoder().encodeToString(file.getBytes());
-            prato.setImagem("data:" + file.getContentType() + ";base64," + base64);
+            if (file != null && !file.isEmpty()) {
+                String base64 = Base64.getEncoder().encodeToString(file.getBytes());
+                prato.setImagem("data:" + file.getContentType() + ";base64," + base64);
+            }
+
+            return ResponseEntity.ok(pratoService.criarPrato(prato));
+        } catch (Exception e) {
+            e.printStackTrace(); 
+            return ResponseEntity.status(500).body("Erro ao criar prato: " + e.getMessage());
         }
-
-        return pratoService.criarPrato(prato);
     }
 
     @PatchMapping("/{id}/ativar")
@@ -64,22 +72,31 @@ public class PratoController {
         return pratoService.desativarPrato(id);
     }
     
-    
     @PatchMapping(value = "/{id}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<Prato> atualizarPrato(
+    public ResponseEntity<?> atualizarPrato(
             @PathVariable int id, 
             @RequestPart("prato") String pratoJson,
-            @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         
-        ObjectMapper objectMapper = new ObjectMapper();
-        java.util.Map<String, Object> campos = objectMapper.readValue(pratoJson, java.util.Map.class);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+           
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            
+            
+            Map<String, Object> campos = objectMapper.readValue(pratoJson, Map.class);
 
-        if (file != null && !file.isEmpty()) {
-            String base64 = Base64.getEncoder().encodeToString(file.getBytes());
-            campos.put("imagem", "data:" + file.getContentType() + ";base64," + base64);
+            if (file != null && !file.isEmpty()) {
+                String base64 = Base64.getEncoder().encodeToString(file.getBytes());
+                campos.put("imagem", "data:" + file.getContentType() + ";base64," + base64);
+            }
+
+            return pratoService.atualizarPrato(id, campos);
+        } catch (Exception e) {
+            
+            e.printStackTrace(); 
+            return ResponseEntity.status(500).body("Erro ao atualizar prato: " + e.getMessage());
         }
-
-        return pratoService.atualizarPrato(id, campos);
     }
 
     @DeleteMapping("/{id}")
