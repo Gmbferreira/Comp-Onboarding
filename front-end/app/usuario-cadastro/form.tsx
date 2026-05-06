@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie"; 
 import { toast } from "sonner";
 import { Phone, Lock, User, Loader2, UserCircle2, Mail } from "lucide-react";
 
@@ -12,12 +13,16 @@ import { Input } from "@/components/ui/input";
 import { API_ROUTES } from "../config/api-routes";
 import { CadastroData, cadastroSchema } from "../schemas/usuarioSchema";
 
-
 export default function CadastroForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<CadastroData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CadastroData>({
     resolver: zodResolver(cadastroSchema),
   });
 
@@ -30,18 +35,29 @@ export default function CadastroForm() {
         body: JSON.stringify(data),
       });
 
+      
+      const clienteSalvo = await res.json();
+
       if (!res.ok) {
-        const msg = await res.text();
-        throw new Error(msg || "Erro ao realizar cadastro.");
+        
+        throw new Error(clienteSalvo || "Erro ao realizar cadastro.");
       }
 
-      toast.success("Conta criada com sucesso!", { position: "top-center" });
+
+      if (clienteSalvo.id) {
+        Cookies.set("auth-token", String(clienteSalvo.id), { expires: 7 });
+        Cookies.set("user-role", "CLIENTE", { expires: 7 });
+        Cookies.set("user-name", clienteSalvo.nome, { expires: 7 });
+      }
+
+      toast.success(`Bem-vindo, ${clienteSalvo.nome}! Conta criada com sucesso.`, { 
+        position: "top-center" 
+      });
       
-      reset(); // Limpa o formulário
-      router.push("/landing-page"); // Redireciona
+      reset(); 
+      router.push("/landing-page"); 
       
     } catch (error: any) {
-      // Tratamento de servidor indisponível ou erro de rede
       const isNetworkError = error.name === "TypeError" && error.message.includes("fetch");
       
       toast.error(
@@ -68,7 +84,11 @@ export default function CadastroForm() {
               className="pl-12 py-6 rounded-2xl border-none bg-white/80 focus-visible:ring-[#4A7C44]" 
             />
           </div>
-          {errors.nome && <p className="text-red-500 text-[10px] font-bold uppercase px-2">{errors.nome.message}</p>}
+          {errors.nome && (
+            <p className="text-red-500 text-[10px] font-bold uppercase px-2">
+              {errors.nome.message}
+            </p>
+          )}
         </div>
 
         {/* E-mail */}
@@ -82,7 +102,11 @@ export default function CadastroForm() {
               className="pl-12 py-6 rounded-2xl border-none bg-white/80 focus-visible:ring-[#4A7C44]" 
             />
           </div>
-          {errors.email && <p className="text-red-500 text-[10px] font-bold uppercase px-2">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-[10px] font-bold uppercase px-2">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
         {/* Telefone */}
@@ -95,7 +119,11 @@ export default function CadastroForm() {
               className="pl-12 py-6 rounded-2xl border-none bg-white/80 focus-visible:ring-[#4A7C44]" 
             />
           </div>
-          {errors.telefone && <p className="text-red-500 text-[10px] font-bold uppercase px-2">{errors.telefone.message}</p>}
+          {errors.telefone && (
+            <p className="text-red-500 text-[10px] font-bold uppercase px-2">
+              {errors.telefone.message}
+            </p>
+          )}
         </div>
 
         {/* Senha */}
@@ -109,15 +137,26 @@ export default function CadastroForm() {
               className="pl-12 py-6 rounded-2xl border-none bg-white/80 focus-visible:ring-[#4A7C44]" 
             />
           </div>
-          {errors.senha && <p className="text-red-500 text-[10px] font-bold uppercase px-2">{errors.senha.message}</p>}
+          {errors.senha && (
+            <p className="text-red-500 text-[10px] font-bold uppercase px-2">
+              {errors.senha.message}
+            </p>
+          )}
         </div>
 
         <Button
           type="submit"
           disabled={loading}
-          className="w-full bg-[#4A7C44] hover:bg-[#3d6638] text-white py-7 rounded-2xl text-lg font-medium shadow-lg mt-4 transition-all"
+          className="w-full bg-[#4A7C44] hover:bg-[#3d6638] text-white py-7 rounded-2xl text-lg font-medium shadow-lg mt-4 transition-all active:scale-[0.98]"
         >
-          {loading ? <Loader2 className="animate-spin" /> : "Confirmar"}
+          {loading ? (
+            <div className="flex items-center gap-2">
+              <Loader2 className="animate-spin h-5 w-5" />
+              <span>Criando conta...</span>
+            </div>
+          ) : (
+            "Confirmar"
+          )}
         </Button>
       </form>
     </div>
