@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, MapPin } from "lucide-react"; // Importei MapPin para o ícone
+import { ShoppingBag, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { ItemPedido, PedidoEnvio } from "../schemas/pedidosSchemas";
+import { ItemPedido } from "../schemas/pedidosSchemas";
 import { API_ROUTES } from "../config/api-routes";
 
 interface ListaPedidosProps {
@@ -92,10 +92,10 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
   };
 
   return (
-    <aside className="bg-[#D1E7D3] rounded-3xl p-6 h-fit sticky top-8 shadow-sm">
+    <aside className="bg-white border border-green-100 rounded-3xl p-6 shadow-sm h-fit">
       <div className="flex items-center gap-3 mb-8">
-        <div className="bg-white p-2 rounded-lg relative">
-          <ShoppingBag size={24} className="text-black" />
+        <div className="bg-[#D1E7D3] p-2 rounded-lg relative">
+          <ShoppingBag size={24} className="text-[#4A7C44]" />
           <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
             {itens.length}
           </span>
@@ -112,7 +112,7 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
         )}
 
         {itens.map((item) => (
-          <div key={item.idPrato} className="border-b border-green-200 pb-4">
+          <div key={item.idPrato} className="border-b border-green-50 pb-4">
             <div className="flex justify-between font-bold text-gray-700 mb-2">
               <span>{item.nome}</span>
               <span>${(item.preco * item.quantidade).toFixed(2)}</span>
@@ -120,14 +120,14 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
             <div className="flex items-center gap-3 text-lg font-bold">
               <button
                 onClick={() => alterarQuantidade(item.idPrato, -1)}
-                className="hover:text-green-700 font-mono"
+                className="text-gray-400 hover:text-red-500 font-mono"
               >
                 [-]
               </button>
-              <span>{item.quantidade}</span>
+              <span className="text-sm">{item.quantidade}</span>
               <button
                 onClick={() => alterarQuantidade(item.idPrato, 1)}
-                className="hover:text-green-700 font-mono"
+                className="text-gray-400 hover:text-green-600 font-mono"
               >
                 [+]
               </button>
@@ -136,7 +136,8 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
         ))}
       </div>
 
-      <div className="mb-8 p-4 bg-white/50 rounded-2xl border border-green-200">
+      {/* Endereço */}
+      <div className="mb-8 p-4 bg-green-50/50 rounded-2xl border border-green-100">
         <div className="flex items-center gap-2 mb-2 text-[#4A7C44] font-bold">
           <MapPin size={18} />
           <Label htmlFor="endereco">Endereço de Entrega</Label>
@@ -146,11 +147,12 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
           placeholder="Rua, número, bairro..."
           value={endereco}
           onChange={(e) => setEndereco(e.target.value)}
-          className="bg-white border-none rounded-xl focus-visible:ring-[#4A7C44]"
+          className="bg-white border-green-100 rounded-xl focus-visible:ring-[#4A7C44]"
         />
       </div>
 
-      <div className="space-y-3 text-gray-700 font-semibold border-t border-green-300 pt-6">
+      {/* Totais */}
+      <div className="space-y-3 text-gray-700 font-semibold border-t border-green-50 pt-6">
         <div className="flex justify-between">
           <span>Subtotal</span>
           <span>${subtotal.toFixed(2)}</span>
@@ -167,7 +169,7 @@ export default function ListaPedidos({ itens, setItens }: ListaPedidosProps) {
 
       <Button
         onClick={finalizarPedido}
-        className="w-full mt-8 bg-[#6CB471] hover:bg-[#5da162] text-white rounded-full py-7 text-xl font-bold shadow-lg"
+        className="w-full mt-8 bg-[#6CB471] hover:bg-[#5da162] text-white rounded-full py-7 text-xl font-bold shadow-md"
       >
         Confirmar Pedido
       </Button>

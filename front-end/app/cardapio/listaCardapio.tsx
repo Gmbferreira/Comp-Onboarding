@@ -66,19 +66,18 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
   }
 
   return (
-    <div className="container mx-auto px-0 lg:px-4 pb-20">
-      <h1 className="text-center text-3xl lg:text-5xl font-bold py-8 lg:py-12 text-[#1a1a1a]">
-        Cardápio
-      </h1>
-
-      <div className="flex overflow-x-auto lg:flex-wrap justify-start lg:justify-center gap-2 lg:gap-4 mb-8 lg:mb-16 pb-4 no-scrollbar">
+    <div className="w-full pb-20">
+      {/* Filtros: Alinhados à esquerda para começar junto com o topo da lista de pedidos */}
+      <div className="flex overflow-x-auto lg:flex-wrap justify-start gap-2 lg:gap-4 mb-8 lg:mb-12 pb-4 no-scrollbar">
         {["TODOS", "REFEICAO", "SOBREMESA", "BEBIDA"].map((cat) => (
           <Button
             key={cat}
             onClick={() => setFiltro(cat as any)}
             variant="outline"
-            className={`rounded-full px-4 lg:px-10 py-4 lg:py-6 text-sm lg:text-lg border-none shrink-0 ${
-              filtro === cat ? "bg-[#4A7C44] text-white" : "bg-white text-black"
+            className={`rounded-full px-4 lg:px-10 py-4 lg:py-6 text-sm lg:text-lg border-none shadow-sm shrink-0 ${
+              filtro === cat
+                ? "bg-[#4A7C44] text-white"
+                : "bg-white text-black hover:bg-green-50"
             }`}
           >
             {cat === "TODOS"
@@ -92,7 +91,8 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-2 lg:gap-8">
+      {/* Grid de Pratos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
         {pratosExibidos.map((prato) => (
           <Card
             key={prato.id}
@@ -108,17 +108,16 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
               ) : (
                 <div className="flex h-full items-center justify-center">
                   <ImageIcon className="text-gray-300" size={48} />
-                  {/* Importe o ImageIcon de 'lucide-react' no topo do arquivo */}
                 </div>
               )}
             </div>
 
-            <CardContent className="p-2 lg:p-5">
+            <CardContent className="p-4 lg:p-5">
               <div className="flex flex-col lg:flex-row justify-between lg:items-start mb-1">
-                <h2 className="text-[10px] lg:text-xl font-bold text-[#4A7C44] truncate">
+                <h2 className="text-base lg:text-xl font-bold text-[#4A7C44] truncate">
                   {prato.nome}
                 </h2>
-                <span className="font-bold text-gray-700 text-[10px] lg:text-base">
+                <span className="font-bold text-gray-700 text-sm lg:text-base">
                   ${prato.preco.toFixed(2)}
                 </span>
               </div>
@@ -127,8 +126,8 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
                 {prato.descricao}
               </p>
 
-              <div className="flex justify-between items-center mt-1 lg:mt-0">
-                <div className="hidden lg:flex gap-0.5">
+              <div className="flex justify-between items-center mt-2 lg:mt-0">
+                <div className="flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
@@ -143,7 +142,7 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
                 </div>
                 <Button
                   size="icon"
-                  className="bg-[#f3f3f3] hover:bg-[#e6e6e6] rounded-md lg:rounded-lg h-6 w-6 lg:h-9 lg:w-9 ml-auto lg:ml-0"
+                  className="bg-[#f3f3f3] hover:bg-[#e6e6e6] rounded-md lg:rounded-lg h-8 w-8 lg:h-9 lg:w-9"
                   onClick={() =>
                     onAdicionarItem({
                       idPrato: prato.id,
@@ -153,7 +152,7 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
                     })
                   }
                 >
-                  <ShoppingBag className="text-black w-3 h-3 lg:w-5 lg:h-5" />
+                  <ShoppingBag className="text-black w-4 h-4 lg:w-5 lg:h-5" />
                 </Button>
               </div>
             </CardContent>
@@ -161,6 +160,7 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
         ))}
       </div>
 
+      {/* Paginação */}
       {totalPaginas > 1 && (
         <div className="flex justify-center items-center gap-4 mt-12">
           <Button
