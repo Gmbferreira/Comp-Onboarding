@@ -42,7 +42,11 @@ export default function ListaCardapio() {
   const categorias = [
     { id: "TODOS", label: "Todos", icon: <LayoutGrid className="h-4 w-4" /> },
     { id: "REFEICAO", label: "Pratos", icon: <Soup className="h-4 w-4" /> },
-    { id: "SOBREMESA", label: "Sobremesas", icon: <Dessert className="h-4 w-4" /> },
+    {
+      id: "SOBREMESA",
+      label: "Sobremesas",
+      icon: <Dessert className="h-4 w-4" />,
+    },
     { id: "BEBIDA", label: "Bebidas", icon: <Coffee className="h-4 w-4" /> },
   ];
 
@@ -53,7 +57,7 @@ export default function ListaCardapio() {
 
   const pratosExibidos = pratosFiltrados.slice(
     (paginaAtual - 1) * itensPorPagina,
-    paginaAtual * itensPorPagina
+    paginaAtual * itensPorPagina,
   );
 
   if (carregando) {
@@ -100,7 +104,7 @@ export default function ListaCardapio() {
         {pratosExibidos.map((prato) => (
           <Card
             key={prato.id}
-            className="border-none shadow-sm hover:shadow-md transition-shadow overflow-hidden bg-white rounded-[2rem]"
+            className="border-none shadow-sm hover:shadow-md pt-0 transition-shadow overflow-hidden bg-white rounded-lg"
           >
             <div className="relative h-48 w-full bg-gray-50">
               <img

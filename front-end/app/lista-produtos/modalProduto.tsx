@@ -86,7 +86,7 @@ export default function ModalProduto({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[450px] bg-[#F5F5ED] rounded-[2rem] border-none shadow-2xl">
+      <DialogContent className="sm:max-w-[450px] bg-[#F5F5ED] rounded-lg border-none shadow-2xl p-6">
         <DialogHeader>
           <DialogTitle className="text-[#4A7C44] text-2xl font-bold">
             {pratoParaEditar ? "Editar Prato" : "Novo Prato"}
@@ -105,7 +105,7 @@ export default function ModalProduto({
               </Label>
               <Input
                 id="nome"
-                className="bg-white rounded-xl border-none"
+                className="bg-white rounded-lg border-none"
                 value={formData.nome}
                 onChange={(e) =>
                   setFormData({ ...formData, nome: e.target.value })
@@ -119,7 +119,7 @@ export default function ModalProduto({
               <Input
                 id="preco"
                 type="number"
-                className="bg-white rounded-xl border-none"
+                className="bg-white rounded-lg border-none"
                 value={formData.preco}
                 onChange={(e) =>
                   setFormData({ ...formData, preco: Number(e.target.value) })
@@ -136,7 +136,7 @@ export default function ModalProduto({
                 setFormData({ ...formData, categoria: val })
               }
             >
-              <SelectTrigger className="bg-white rounded-xl border-none">
+              <SelectTrigger className="bg-white rounded-lg border-none">
                 <SelectValue placeholder="Selecione..." />
               </SelectTrigger>
               <SelectContent className="bg-white">
@@ -151,7 +151,7 @@ export default function ModalProduto({
             <Label className="font-bold">Imagem do Produto</Label>
             <div className="flex flex-col items-center gap-4">
               {formData.imagem ? (
-                <div className="relative w-full h-44 rounded-2xl overflow-hidden border group shadow-inner">
+                <div className="relative w-full h-44 rounded-lg overflow-hidden border group shadow-inner">
                   <img
                     src={formData.imagem}
                     className="w-full h-full object-cover"
@@ -189,7 +189,7 @@ export default function ModalProduto({
                   </Button>
                 </div>
               ) : (
-                <label className="w-full h-44 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl bg-white cursor-pointer hover:bg-gray-50 transition-colors">
+                <label className="w-full h-44 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg bg-white cursor-pointer hover:bg-gray-50 transition-colors">
                   <Upload className="text-gray-400 mb-2" />
                   <span className="text-sm text-gray-500 font-medium">
                     Clique para subir foto
@@ -211,7 +211,7 @@ export default function ModalProduto({
             </Label>
             <Textarea
               id="desc"
-              className="bg-white rounded-xl border-none resize-none"
+              className="bg-white rounded-lg border-none resize-none"
               rows={3}
               value={formData.descricao}
               onChange={(e) =>
@@ -225,13 +225,13 @@ export default function ModalProduto({
           <Button
             variant="ghost"
             onClick={onClose}
-            className="rounded-xl font-bold"
+            className="rounded-lg font-bold"
           >
             Cancelar
           </Button>
           <Button
             type="button"
-            className="bg-[#4A7C44] hover:bg-[#3d6638] rounded-xl font-bold px-6"
+            className="bg-[#4A7C44] hover:bg-[#3d6638] rounded-lg font-bold px-6"
             onClick={() => onSave(formData)}
           >
             {pratoParaEditar ? "Salvar Alterações" : "Cadastrar Prato"}

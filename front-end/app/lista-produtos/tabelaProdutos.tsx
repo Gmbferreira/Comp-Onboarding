@@ -1,20 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-  Plus, 
-  Loader2, 
-  ImageIcon, 
-  Pencil, 
-  PauseCircle, 
-  PlayCircle, 
-  MoreHorizontal, 
-  LayoutGrid, 
-  Soup, 
-  Dessert, 
-  Coffee, 
+import {
+  Plus,
+  Loader2,
+  ImageIcon,
+  Pencil,
+  PauseCircle,
+  PlayCircle,
+  MoreHorizontal,
+  LayoutGrid,
+  Soup,
+  Dessert,
+  Coffee,
   Camera,
-  Trash2
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -25,7 +25,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Prato, PratoFormData, CategoriaPrato } from "../schemas/cardapioSchemas";
+import {
+  Prato,
+  PratoFormData,
+  CategoriaPrato,
+} from "../schemas/cardapioSchemas";
 import { API_ROUTES } from "../config/api-routes";
 import ModalProduto from "./modalProduto";
 
@@ -144,13 +148,18 @@ export default function TabelaProdutos() {
   const categorias = [
     { id: "TODOS", label: "Todos", icon: <LayoutGrid className="h-4 w-4" /> },
     { id: "REFEICAO", label: "Pratos", icon: <Soup className="h-4 w-4" /> },
-    { id: "SOBREMESA", label: "Sobremesas", icon: <Dessert className="h-4 w-4" /> },
+    {
+      id: "SOBREMESA",
+      label: "Sobremesas",
+      icon: <Dessert className="h-4 w-4" />,
+    },
     { id: "BEBIDA", label: "Bebidas", icon: <Coffee className="h-4 w-4" /> },
   ];
 
-  const produtosFiltrados = filtro === "TODOS" 
-    ? produtos 
-    : produtos.filter(p => p.categoria === filtro);
+  const produtosFiltrados =
+    filtro === "TODOS"
+      ? produtos
+      : produtos.filter((p) => p.categoria === filtro);
 
   if (carregando)
     return (
@@ -197,7 +206,7 @@ export default function TabelaProdutos() {
         {produtosFiltrados.map((prato) => (
           <Card
             key={prato.id}
-            className={`overflow-hidden border-none shadow-xl bg-white flex flex-col rounded-[2.5rem] transition-all duration-300 ${
+            className={`overflow-hidden border-none shadow-xl bg-white flex flex-col rounded-lg pt-0 transition-all duration-300 ${
               !prato.ativo ? "opacity-60 grayscale-[0.5]" : "hover:shadow-2xl"
             }`}
           >
@@ -219,12 +228,16 @@ export default function TabelaProdutos() {
               <div className="absolute top-4 right-4">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="bg-white/90 hover:bg-white rounded-full h-8 w-8 shadow-sm">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="bg-white/90 hover:bg-white rounded-full h-8 w-8 shadow-sm"
+                    >
                       <MoreHorizontal size={18} className="text-gray-600" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="rounded-xl">
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       className="text-red-600 focus:text-red-600 cursor-pointer"
                       onClick={() => handleRemover(prato.id)}
                     >
@@ -235,7 +248,7 @@ export default function TabelaProdutos() {
               </div>
 
               {/* Botão Editar Foto (Overlay) */}
-              <button 
+              <button
                 onClick={() => {
                   setProdutoEmEdicao(prato);
                   setModalAberto(true);
@@ -257,7 +270,7 @@ export default function TabelaProdutos() {
                   R$ {prato.preco.toFixed(2)}
                 </span>
               </div>
-              
+
               <p className="text-xs text-gray-400 line-clamp-2 h-8 leading-relaxed mb-6">
                 {prato.descricao}
               </p>
@@ -284,22 +297,26 @@ export default function TabelaProdutos() {
                   size="sm"
                   onClick={() => handleToggleStatus(prato)}
                   className={`flex-1 flex gap-2 font-bold rounded-xl transition-colors ${
-                    prato.ativo 
-                      ? "text-red-500 hover:bg-red-50 hover:text-red-600" 
+                    prato.ativo
+                      ? "text-red-500 hover:bg-red-50 hover:text-red-600"
                       : "text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
                   }`}
                 >
                   {prato.ativo ? (
-                    <><PauseCircle size={16} /> Pausar</>
+                    <>
+                      <PauseCircle size={16} /> Pausar
+                    </>
                   ) : (
-                    <><PlayCircle size={16} /> Ativar</>
+                    <>
+                      <PlayCircle size={16} /> Ativar
+                    </>
                   )}
                 </Button>
               </div>
             </CardContent>
           </Card>
         ))}
-      </div> 
+      </div>
 
       <ModalProduto
         isOpen={modalAberto}

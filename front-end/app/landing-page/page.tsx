@@ -14,6 +14,7 @@ import {
 import { Bike, Leaf, Utensils, Sparkles, Loader2 } from "lucide-react";
 import { Prato } from "../schemas/cardapioSchemas";
 import { mockPratos } from "../mocks/cardapioMock";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function HomePageLogged() {
   const [destaques, setDestaques] = useState<Prato[]>([]);
@@ -24,7 +25,7 @@ export default function HomePageLogged() {
     const pratosSorteados = [...mockPratos]
       .sort(() => 0.5 - Math.random())
       .slice(0, 3);
-    
+
     setDestaques(pratosSorteados);
     setLoading(false);
   }, []);
@@ -32,18 +33,17 @@ export default function HomePageLogged() {
   return (
     <div className="min-h-screen bg-[#FDFDF7] flex flex-col font-sans">
       {/* Navbar configurada exatamente como solicitado: Cardápio + Sair */}
-      <Navbar 
-        showLogin={false} 
-        showLogout={true} 
+      <Navbar
+        showLogin={false}
+        showLogout={true}
         links={[{ href: "/cardapio", title: "Cardápio" }]}
       />
 
       <main className="flex-grow flex flex-col items-center justify-center pt-4 md:pt-8 px-4 pb-12">
-        
         {/* Seção do Carrossel com verificação de carregamento */}
         <div className="w-full max-w-4xl min-h-[250px] md:min-h-[350px] flex items-center justify-center">
           {loading ? (
-            <Loader2 className="animate-spin text-[#4A7C44]" size={40} />
+            <Skeleton className="w-[896px] h-[436px]" />
           ) : destaques.length > 0 ? (
             <Carousel
               className="w-full rounded-[2rem] shadow-lg overflow-hidden border-[8px] border-white"
@@ -74,16 +74,18 @@ export default function HomePageLogged() {
               <CarouselNext className="right-4 bg-black/20 hover:bg-black/40 border-none text-white" />
             </Carousel>
           ) : (
-            <div className="text-gray-400">Nenhum destaque disponível no momento.</div>
+            <div className="text-gray-400">
+              Nenhum destaque disponível no momento.
+            </div>
           )}
         </div>
 
         {/* Seção de Chamada (CTA) */}
         <div className="mt-8 text-center w-full max-w-4xl space-y-6">
           <div className="flex items-center justify-center gap-2 text-[#4A7C44]">
-             <p className="text-base md:text-xl font-serif italic text-gray-700 tracking-tight">
-               “Seu próximo pedido favorito começa aqui.”
-             </p>
+            <p className="text-base md:text-xl font-serif italic text-gray-700 tracking-tight">
+              “Seu próximo pedido favorito começa aqui.”
+            </p>
           </div>
 
           <div className="flex justify-center">
@@ -99,11 +101,23 @@ export default function HomePageLogged() {
           {/* Barra de Diferenciais */}
           <div className="pt-6 w-full">
             <div className="bg-white/60 backdrop-blur-md rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-around gap-6 border border-gray-100 shadow-sm">
-              <FeatureItem icon={<Bike className="h-5 w-5" />} title="Entrega rápida" desc="Em poucos minutos" />
+              <FeatureItem
+                icon={<Bike className="h-5 w-5" />}
+                title="Entrega rápida"
+                desc="Em poucos minutos"
+              />
               <div className="hidden md:block h-8 w-[1px] bg-gray-200" />
-              <FeatureItem icon={<Leaf className="h-5 w-5" />} title="Ingredientes frescos" desc="Selecionados com carinho" />
+              <FeatureItem
+                icon={<Leaf className="h-5 w-5" />}
+                title="Ingredientes frescos"
+                desc="Selecionados com carinho"
+              />
               <div className="hidden md:block h-8 w-[1px] bg-gray-200" />
-              <FeatureItem icon={<Utensils className="h-5 w-5" />} title="Pratos artesanais" desc="Com amor e sabor" />
+              <FeatureItem
+                icon={<Utensils className="h-5 w-5" />}
+                title="Pratos artesanais"
+                desc="Com amor e sabor"
+              />
             </div>
           </div>
         </div>
@@ -112,14 +126,24 @@ export default function HomePageLogged() {
   );
 }
 
-function FeatureItem({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+function FeatureItem({
+  icon,
+  title,
+  desc,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}) {
   return (
     <div className="flex items-center gap-3 text-left">
       <div className="bg-[#F0F4EF] p-2 md:p-3 rounded-full text-[#4A7C44] shrink-0">
         {icon}
       </div>
       <div>
-        <h4 className="font-bold text-gray-800 text-xs md:text-sm leading-none">{title}</h4>
+        <h4 className="font-bold text-gray-800 text-xs md:text-sm leading-none">
+          {title}
+        </h4>
         <p className="text-[10px] text-gray-500 mt-1">{desc}</p>
       </div>
     </div>
