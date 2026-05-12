@@ -31,7 +31,7 @@ export default function HomePageLogged() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFDF7] flex flex-col font-sans">
+      <div className="min-h-screen bg-[url('/BackgroundL.png')] bg-cover bg-center bg-no-repeat flex flex-col font-sans">
       {/* Navbar configurada exatamente como solicitado: Cardápio + Sair */}
       <Navbar
         showLogin={false}

@@ -31,12 +31,13 @@ export default function HomePageLogged() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FDFDF7] flex flex-col font-sans">
+    <div className="min-h-screen bg-[url('/BackgroundL.png')] bg-cover bg-center bg-no-repeat flex flex-col font-sans">
       {/* Navbar configurada exatamente como solicitado: Cardápio + Sair */}
       <Navbar showLogin={true} showLogout={false} />
-
+      
       <main className="flex-grow flex flex-col items-center justify-center pt-4 md:pt-8 px-4 pb-12">
         {/* Seção do Carrossel com verificação de carregamento */}
+        
         <div className="w-full max-w-4xl min-h-[250px] md:min-h-[350px] flex items-center justify-center">
           {loading ? (
             <Skeleton className="w-[896px] h-[436px]" />
