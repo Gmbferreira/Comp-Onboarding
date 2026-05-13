@@ -25,20 +25,24 @@ export default function Page() {
   };
 
   return (
-    <>
-      <Navbar links={[{ href: "/cardapio", title: "Cardápio" }]} />
-      <div className="min-h-screen bg-[#F5F5ED] p-4 lg:p-8">
+    <div className="min-h-screen bg-[#FDFDF7]">
+      {/* Navbar apenas com botão de sair */}
+      <Navbar showLogin={false} showLogout={true} />
+      
+      <main className="p-4 lg:p-8">
         <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-12 gap-8">
-          <div className="order-1 lg:order-2 lg:col-span-4">
-            <ListaPedidos itens={itensCarrinho} setItens={setItensCarrinho} />
-          </div>
-
+          {/* Cardápio (Esquerda) */}
           <div className="order-2 lg:order-1 lg:col-span-8">
             <ListaCardapio onAdicionarItem={adicionarAoCarrinho} />
           </div>
+
+          {/* Carrinho/Pedido (Direita) */}
+          <div className="order-1 lg:order-2 lg:col-span-4">
+            <ListaPedidos itens={itensCarrinho} setItens={setItensCarrinho} />
+          </div>
         </div>
-      </div>
+      </main>
       <Toaster position="bottom-right" richColors />
-    </>
+    </div>
   );
 }

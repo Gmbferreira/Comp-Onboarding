@@ -4,12 +4,14 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  ShoppingBag,
   Star,
   Loader2,
-  ChevronLeft,
-  ChevronRight,
   ImageIcon,
+  LayoutGrid,
+  Soup,
+  Dessert,
+  Coffee,
+  Plus,
 } from "lucide-react";
 import { CategoriaPrato, Prato } from "../schemas/cardapioSchemas";
 import { API_ROUTES } from "../config/api-routes";
@@ -24,9 +26,6 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
   const [todosPratos, setTodosPratos] = useState<Prato[]>([]);
   const [filtro, setFiltro] = useState<CategoriaPrato | "TODOS">("TODOS");
   const [carregando, setCarregando] = useState(true);
-
-  const [paginaAtual, setPaginaAtual] = useState(1);
-  const itensPorPagina = 12;
 
   useEffect(() => {
     async function carregarDados() {
@@ -44,91 +43,80 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
     carregarDados();
   }, []);
 
+  const categorias = [
+    { id: "TODOS", label: "Todos", icon: <LayoutGrid className="h-4 w-4" /> },
+    { id: "REFEICAO", label: "Pratos", icon: <Soup className="h-4 w-4" /> },
+    {
+      id: "SOBREMESA",
+      label: "Sobremesas",
+      icon: <Dessert className="h-4 w-4" />,
+    },
+    { id: "BEBIDA", label: "Bebidas", icon: <Coffee className="h-4 w-4" /> },
+  ];
+
   const pratosFiltrados =
     filtro === "TODOS"
       ? todosPratos
       : todosPratos.filter((p) => p.categoria === filtro);
 
-  const totalPaginas = Math.ceil(pratosFiltrados.length / itensPorPagina);
-  const inicio = (paginaAtual - 1) * itensPorPagina;
-  const pratosExibidos = pratosFiltrados.slice(inicio, inicio + itensPorPagina);
-
-  useEffect(() => {
-    setPaginaAtual(1);
-  }, [filtro]);
-
-  if (carregando) {
+  if (carregando)
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="animate-spin text-[#4A7C44]" size={48} />
+      <div className="flex justify-center p-20">
+        <Loader2 className="animate-spin text-[#4A7C44]" size={40} />
       </div>
     );
-  }
 
   return (
-    <div className="container mx-auto px-0 lg:px-4 pb-20">
-      <h1 className="text-center text-3xl lg:text-5xl font-bold py-8 lg:py-12 text-[#1a1a1a]">
-        Cardápio
-      </h1>
+    <div className="w-full">
+      <div className="mb-8">
+        <h1 className="text-3xl font-serif font-bold text-gray-800 italic">
+          Nosso Cardápio
+        </h1>
+        <div className="h-1 w-16 bg-[#4A7C44] mt-2 rounded-full" />
+      </div>
 
-      <div className="flex overflow-x-auto lg:flex-wrap justify-start lg:justify-center gap-2 lg:gap-4 mb-8 lg:mb-16 pb-4 no-scrollbar">
-        {["TODOS", "REFEICAO", "SOBREMESA", "BEBIDA"].map((cat) => (
+      <div className="flex overflow-x-auto gap-3 mb-10 pb-2 no-scrollbar">
+        {categorias.map((cat) => (
           <Button
-            key={cat}
-            onClick={() => setFiltro(cat as any)}
-            variant="outline"
-            className={`rounded-full px-4 lg:px-10 py-4 lg:py-6 text-sm lg:text-lg border-none shrink-0 ${
-              filtro === cat ? "bg-[#4A7C44] text-white" : "bg-white text-black"
+            key={cat.id}
+            onClick={() => setFiltro(cat.id as any)}
+            className={`rounded-full px-6 py-5 flex gap-3 border-none shadow-sm transition-all ${
+              filtro === cat.id
+                ? "bg-[#2D4A26] text-white"
+                : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
           >
-            {cat === "TODOS"
-              ? "Todos"
-              : cat === "REFEICAO"
-                ? "Pratos"
-                : cat === "SOBREMESA"
-                  ? "Sobremesas"
-                  : "Bebidas"}
+            {cat.icon}{" "}
+            <span className="font-semibold text-sm">{cat.label}</span>
           </Button>
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-2 lg:gap-8">
-        {pratosExibidos.map((prato) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        {pratosFiltrados.map((prato) => (
           <Card
             key={prato.id}
-            className="border-none shadow-sm lg:shadow-md overflow-hidden bg-white rounded-lg lg:rounded-xl"
+            className="border-none shadow-sm overflow-hidden bg-white rounded-lg pt-0"
           >
-            <div className="relative h-48 lg:h-56 w-full bg-gray-100">
-              {prato.imagem ? (
-                <img
-                  src={prato.imagem}
-                  alt={prato.nome}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <ImageIcon className="text-gray-300" size={48} />
-                  {/* Importe o ImageIcon de 'lucide-react' no topo do arquivo */}
-                </div>
-              )}
-            </div>
-
-            <CardContent className="p-2 lg:p-5">
-              <div className="flex flex-col lg:flex-row justify-between lg:items-start mb-1">
-                <h2 className="text-[10px] lg:text-xl font-bold text-[#4A7C44] truncate">
-                  {prato.nome}
-                </h2>
-                <span className="font-bold text-gray-700 text-[10px] lg:text-base">
-                  ${prato.preco.toFixed(2)}
-                </span>
+            <div className="relative h-44 w-full">
+              <img
+                src={prato.imagem ?? ""}
+                alt={prato.nome}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm font-bold text-[#4A7C44] text-sm">
+                R$ {prato.preco.toFixed(2)}
               </div>
-
-              <p className="hidden lg:block text-sm text-[#8BAE86] leading-snug mb-4 h-10 line-clamp-2">
+            </div>
+            <CardContent className="p-5">
+              <h2 className="text-lg font-bold text-gray-800 truncate">
+                {prato.nome}
+              </h2>
+              <p className="text-xs text-gray-500 mb-4 line-clamp-2">
                 {prato.descricao}
               </p>
-
-              <div className="flex justify-between items-center mt-1 lg:mt-0">
-                <div className="hidden lg:flex gap-0.5">
+              <div className="flex justify-between items-center">
+                <div className="flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
@@ -136,14 +124,14 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
                       className={
                         i < (prato.nota ?? 5)
                           ? "fill-yellow-400 text-yellow-400"
-                          : "text-gray-200"
+                          : "text-gray-100"
                       }
                     />
                   ))}
                 </div>
                 <Button
                   size="icon"
-                  className="bg-[#f3f3f3] hover:bg-[#e6e6e6] rounded-md lg:rounded-lg h-6 w-6 lg:h-9 lg:w-9 ml-auto lg:ml-0"
+                  className="bg-[#F0F4EF] hover:bg-[#4A7C44] text-[#4A7C44] hover:text-white rounded-xl transition-colors"
                   onClick={() =>
                     onAdicionarItem({
                       idPrato: prato.id,
@@ -153,35 +141,13 @@ export default function ListaCardapio({ onAdicionarItem }: ListaCardapioProps) {
                     })
                   }
                 >
-                  <ShoppingBag className="text-black w-3 h-3 lg:w-5 lg:h-5" />
+                  <Plus size={20} />
                 </Button>
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
-
-      {totalPaginas > 1 && (
-        <div className="flex justify-center items-center gap-4 mt-12">
-          <Button
-            variant="ghost"
-            disabled={paginaAtual === 1}
-            onClick={() => setPaginaAtual((prev) => prev - 1)}
-          >
-            <ChevronLeft size={24} />
-          </Button>
-          <span className="font-bold text-lg text-gray-700">
-            Página {paginaAtual} de {totalPaginas}
-          </span>
-          <Button
-            variant="ghost"
-            disabled={paginaAtual === totalPaginas}
-            onClick={() => setPaginaAtual((prev) => prev + 1)}
-          >
-            <ChevronRight size={24} />
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

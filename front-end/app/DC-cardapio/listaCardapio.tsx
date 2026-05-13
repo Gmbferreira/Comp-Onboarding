@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import {
   Star,
   Loader2,
-  ChevronLeft,
-  ChevronRight,
   ImageIcon,
+  LayoutGrid,
+  Soup,
+  Dessert,
+  Coffee,
 } from "lucide-react";
 import { CategoriaPrato, Prato } from "../schemas/cardapioSchemas";
 import { API_ROUTES } from "../config/api-routes";
@@ -37,12 +39,22 @@ export default function ListaCardapio() {
     carregarDados();
   }, []);
 
+  const categorias = [
+    { id: "TODOS", label: "Todos", icon: <LayoutGrid className="h-4 w-4" /> },
+    { id: "REFEICAO", label: "Pratos", icon: <Soup className="h-4 w-4" /> },
+    {
+      id: "SOBREMESA",
+      label: "Sobremesas",
+      icon: <Dessert className="h-4 w-4" />,
+    },
+    { id: "BEBIDA", label: "Bebidas", icon: <Coffee className="h-4 w-4" /> },
+  ];
+
   const pratosFiltrados =
     filtro === "TODOS"
       ? todosPratos
       : todosPratos.filter((p) => p.categoria === filtro);
 
-  const totalPaginas = Math.ceil(pratosFiltrados.length / itensPorPagina);
   const pratosExibidos = pratosFiltrados.slice(
     (paginaAtual - 1) * itensPorPagina,
     paginaAtual * itensPorPagina,
@@ -57,73 +69,65 @@ export default function ListaCardapio() {
   }
 
   return (
-    <div className="container mx-auto px-0 lg:px-4 pb-20">
-      <h1 className="text-center text-3xl lg:text-5xl font-bold py-8 lg:py-12 text-[#1a1a1a] uppercase tracking-widest">
-        Cardápio
-      </h1>
+    <div className="w-full pb-20">
+      {/* Título refinado */}
+      <div className="mb-10">
+        <h1 className="text-3xl lg:text-4xl font-serif font-bold text-gray-800 italic">
+          Nosso Cardápio
+        </h1>
+        <div className="h-1 w-20 bg-[#4A7C44] mt-2 rounded-full" />
+      </div>
 
-      <div className="flex overflow-x-auto lg:flex-wrap justify-start lg:justify-center gap-2 lg:gap-4 mb-8 lg:mb-16 pb-4 no-scrollbar">
-        {["TODOS", "REFEICAO", "SOBREMESA", "BEBIDA"].map((cat) => (
+      {/* Filtros alinhados à esquerda como no wireframe */}
+      <div className="flex overflow-x-auto gap-3 mb-12 pb-2 no-scrollbar justify-start">
+        {categorias.map((cat) => (
           <Button
-            key={cat}
+            key={cat.id}
             onClick={() => {
-              setFiltro(cat as any);
+              setFiltro(cat.id as any);
               setPaginaAtual(1);
             }}
-            variant="outline"
-            className={`rounded-full px-6 lg:px-10 py-4 lg:py-6 text-sm lg:text-lg border-none shadow-sm ${
-              filtro === cat
-                ? "bg-[#4A7C44] text-white"
-                : "bg-white text-black hover:bg-gray-100"
+            className={`rounded-full px-6 py-6 flex gap-3 items-center border-none shadow-sm transition-all duration-300 ${
+              filtro === cat.id
+                ? "bg-[#2D4A26] text-white hover:bg-[#233a1e]" // Verde escuro do wireframe
+                : "bg-white text-gray-700 hover:bg-gray-50"
             }`}
           >
-            {cat === "TODOS"
-              ? "Todos"
-              : cat === "REFEICAO"
-                ? "Pratos"
-                : cat === "SOBREMESA"
-                  ? "Sobremesas"
-                  : "Bebidas"}
+            {cat.icon}
+            <span className="font-semibold text-sm">{cat.label}</span>
           </Button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
+      {/* Grid de Pratos */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {pratosExibidos.map((prato) => (
           <Card
             key={prato.id}
-            className="border-none shadow-md overflow-hidden bg-white rounded-3xl"
+            className="border-none shadow-sm hover:shadow-md pt-0 transition-shadow overflow-hidden bg-white rounded-lg"
           >
-            <div className="relative h-48 lg:h-56 w-full bg-gray-100">
-              {prato.imagem ? (
-                <img
-                  src={prato.imagem}
-                  alt={prato.nome}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <ImageIcon className="text-gray-300" size={48} />
-                  {/* Importe o ImageIcon de 'lucide-react' no topo do arquivo */}
-                </div>
-              )}
-            </div>
-
-            <CardContent className="p-5">
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="text-lg font-bold text-[#1a1a1a]">
-                  {prato.nome}
-                </h2>
-                <span className="font-bold text-[#4A7C44]">
+            <div className="relative h-48 w-full bg-gray-50">
+              <img
+                src={prato.imagem ?? ""}
+                alt={prato.nome ?? "Prato"}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
+                <span className="text-[#4A7C44] font-bold text-sm">
                   R$ {prato.preco.toFixed(2)}
                 </span>
               </div>
+            </div>
 
-              <p className="text-xs text-gray-500 mb-4 line-clamp-2">
+            <CardContent className="p-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-1">
+                {prato.nome}
+              </h2>
+              <p className="text-xs text-gray-500 mb-4 line-clamp-2 leading-relaxed">
                 {prato.descricao}
               </p>
 
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center pt-2 border-t border-gray-50">
                 <div className="flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -137,6 +141,9 @@ export default function ListaCardapio() {
                     />
                   ))}
                 </div>
+                <span className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">
+                  {prato.categoria}
+                </span>
               </div>
             </CardContent>
           </Card>
