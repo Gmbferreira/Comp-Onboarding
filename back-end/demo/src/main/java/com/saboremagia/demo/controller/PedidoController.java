@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,37 +30,10 @@ public class PedidoController {
     public List<Pedido> listar(){
         return pedidoService.listar();
     }
-    
-    /* 
-    @GetMapping("/{id}")
-    public Pedido buscarPorId(@PathVariable int id){
-        return pedidoService.buscarPorId(id);
-    }
-    
-    @DeleteMapping("/{id}")
-    public void deletar(@PathVariable int id){
-        pedidoService.deletar(id);
-    }
-    
-    @PatchMapping("/{pedidoId}/pratos/{pratoId}")
-    public Pedido adicionarPrato(
-        @PathVariable int pedidoId,
-        @PathVariable int pratoId
-    ){
-        return pedidoService.adicionarPrato(pedidoId, pratoId);
-    }
-    
-    @DeleteMapping("/{pedidoId}/pratos/{pratoId}")
-    public Pedido removerPrato(
-        @PathVariable int pedidoId,
-        @PathVariable int pratoId
-    ){
-        return pedidoService.removerPrato(pedidoId, pratoId);
+     
+    @GetMapping("/cliente/{clienteId}")
+    public List<Pedido> listarPorCliente(@PathVariable int clienteId) {
+        return pedidoService.listarPorCliente(clienteId);
     }
 
-    @GetMapping("/{pedidoId}/total")
-    public float calcularTotal(@PathVariable int pedidoId){
-        return pedidoService.calcularTotal(pedidoId);
-    }
-    */
 }

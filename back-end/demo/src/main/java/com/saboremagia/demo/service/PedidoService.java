@@ -6,15 +6,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.saboremagia.demo.dto.PedidoDTO;
 import com.saboremagia.demo.dto.ItemPedidoDTO;
+import com.saboremagia.demo.dto.PedidoDTO;
 import com.saboremagia.demo.model.Cliente;
-import com.saboremagia.demo.model.Pedido;
 import com.saboremagia.demo.model.ItemPedido;
+import com.saboremagia.demo.model.Pedido;
 import com.saboremagia.demo.model.Prato;
+import com.saboremagia.demo.repository.ClienteRepository;
 import com.saboremagia.demo.repository.PedidoRepository;
 import com.saboremagia.demo.repository.PratoRepository;
-import com.saboremagia.demo.repository.ClienteRepository;
 
 
 @Service
@@ -70,5 +70,12 @@ public class PedidoService {
             total += item.getPrato().getPreco() * item.getQuantidade();
         }
         return (total + 10);
-    }    
+    }
+    
+    public List<Pedido> listarPorCliente(int clienteId) {
+    clienteRepository.findById(clienteId)
+        .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
+    return pedidoRepository.findByClienteId(clienteId);
+}
 }
